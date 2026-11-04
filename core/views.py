@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.decorators import user_passes_test
 # Create your views here.
 
 
@@ -86,3 +86,13 @@ def logout_view(request):
     messages.success(request, "You have been logged out successfully.")
     return redirect('login')
 
+@user_passes_test(
+    lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
+    login_url='login'
+)
+def dashboard(request):
+    context = {
+        'admin_name': request.user.username,
+        'admin_email': request.user.email,
+    }
+    return render(request, 'core/dashboard.html', context)
