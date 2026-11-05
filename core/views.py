@@ -4,7 +4,13 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
-from .models import AdminAccount
+from .models import AdminAccount, AdminPasswordResetOTP
+# Random
+import random
+from datetime import timedelta
+#timezone
+from django.utils import timezone
+from django.core.mail import send_mail
 # Create your views here.
 
 
@@ -144,3 +150,97 @@ def admin_register(request):
             return redirect('login')
 
     return render(request, 'core/admin_register.html')
+
+
+
+
+
+def admin_forgot_password(request):
+
+    if request.method == 'POST':
+
+        email = request.POST.get('email', '').strip().lower()
+
+        request.session.pop('admin_reset_email', None)
+
+        if not email:
+            messages.error(request, "Please enter your email address.")
+
+        else:
+            admin = AdminAccount.objects.filter(
+                email__iexact=email
+            ).first()
+
+            if admin:
+
+                # Generate a six-digit OTP
+                otp = str(random.randint(100000, 999999))
+
+                # Remove previous unused OTPs
+                AdminPasswordResetOTP.objects.filter(
+                    admin=admin,
+                    is_used=False
+                ).delete()
+
+                # Set OTP expiry to five minutes
+                expiry_time = timezone.now() + timedelta(minutes=5)
+
+                # Save OTP in database
+                otp_record = AdminPasswordResetOTP.objects.create(
+                    admin=admin,
+                    otp_code=otp,
+                    expires_at=expiry_time
+                )
+
+                try:
+                    result = send_mail(
+                        subject='Taxi Booking System - Password Reset OTP',
+
+                        message=(
+                            f'Hello {admin.full_name},\n\n'
+                            f'Your password reset OTP is: {otp}\n\n'
+                            'This OTP is valid for 5 minutes.\n'
+                            'Please do not share this OTP with anyone.\n\n'
+                            'Regards,\nTaxi Booking System'
+                        ),
+
+                        from_email=None,
+                        recipient_list=[admin.email],
+                        fail_silently=False
+                    )
+
+                    if result == 1:
+
+                        request.session['admin_reset_email'] = admin.email
+
+                        messages.success(
+                            request,
+                            "OTP has been sent successfully to your registered email address."
+                        )
+
+                    else:
+                        otp_record.delete()
+
+                        messages.error(
+                            request,
+                            "Unable to send OTP. Please try again."
+                        )
+
+                except Exception as e:
+                    otp_record.delete()
+
+                    print("EMAIL ERROR:", str(e))
+
+                    messages.error(
+                        request,
+                        "Email delivery failed. Please check your email configuration."
+                    )
+
+            else:
+                # Email is not registered
+                messages.error(
+                    request,
+                    "This email address is not registered. Please enter a registered admin email."
+                )
+
+    return render(request, 'core/admin_forgot_password.html')
