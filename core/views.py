@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
+from .models import AdminAccount
 # Create your views here.
 
 
@@ -96,3 +97,50 @@ def dashboard(request):
         'admin_email': request.user.email,
     }
     return render(request, 'core/dashboard.html', context)
+
+
+
+
+def admin_register(request):
+
+    if request.method == 'POST':
+
+        full_name = request.POST.get('full_name', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        if not all([full_name, email, username, password, confirm_password]):
+            messages.error(request, "All fields are required.")
+
+        elif password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+
+        elif len(password) < 8:
+            messages.error(request, "Password must contain at least 8 characters.")
+
+        elif AdminAccount.objects.filter(email__iexact=email).exists():
+            messages.error(request, "Email already registered.")
+
+        elif AdminAccount.objects.filter(username__iexact=username).exists():
+            messages.error(request, "Username already exists.")
+
+        else:
+            admin = AdminAccount(
+                full_name=full_name,
+                email=email,
+                username=username
+            )
+
+            admin.set_password(password)
+            admin.save()
+
+            messages.success(
+                request,
+                "Admin account registered successfully."
+            )
+
+            return redirect('login')
+
+    return render(request, 'core/admin_register.html')
