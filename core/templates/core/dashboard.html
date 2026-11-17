@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -10,12 +9,10 @@
     <title>Admin Dashboard | TaxiBook</title>
 
     <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
         /* =====================================
@@ -562,6 +559,7 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
+
             *,
             *::before,
             *::after {
@@ -569,7 +567,6 @@
                 animation-duration: 0.01ms !important;
             }
         }
-
     </style>
 </head>
 
@@ -593,23 +590,23 @@
                 Dashboard
             </a>
 
-            <div class="sidebar-option">
+            <a href="{% url 'drivers' %}" class="sidebar-option">
                 <i class="fa-solid fa-id-card me-2"></i>
                 Drivers
                 <span class="coming-soon">Soon</span>
-            </div>
+            </a>
 
-            <div class="sidebar-option">
+            <a href="{% url 'users' %}" class="sidebar-option">
                 <i class="fa-solid fa-users me-2"></i>
                 Users
                 <span class="coming-soon">Soon</span>
-            </div>
+            </a>
 
-            <div class="sidebar-option">
+            <a href="{% url 'bookings' %}" class="sidebar-option">
                 <i class="fa-solid fa-calendar-check me-2"></i>
                 Bookings
                 <span class="coming-soon">Soon</span>
-            </div>
+            </a>
 
         </div>
 
@@ -636,12 +633,8 @@
 
             <div class="navbar-left">
 
-                <button class="menu-toggle"
-                        id="menuToggle"
-                        type="button"
-                        aria-label="Toggle navigation"
-                        aria-controls="adminSidebar"
-                        aria-expanded="false">
+                <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle navigation"
+                    aria-controls="adminSidebar" aria-expanded="false">
 
                     <i class="fa-solid fa-bars"></i>
 
@@ -668,15 +661,13 @@
 
                     {% if admin_profile %}
 
-                        <img src="{{ admin_profile.url }}"
-                             alt="Admin Profile"
-                             class="admin-avatar">
+                    <img src="{{ admin_profile.url }}" alt="Admin Profile" class="admin-avatar">
 
                     {% else %}
 
-                        <div class="admin-avatar default-avatar">
-                            <i class="fa-solid fa-user-shield"></i>
-                        </div>
+                    <div class="admin-avatar default-avatar">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
 
                     {% endif %}
 
@@ -943,4 +934,5 @@
     </script>
 
 </body>
+
 </html>

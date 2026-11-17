@@ -460,3 +460,40 @@ def admin_reset_password(request):
                 messages.error(request, "Unable to reset password. Please try again.")
 
     return render(request, 'core/admin_reset_password.html')
+
+
+
+@user_passes_test(
+    lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
+    login_url='login'
+)
+def drivers_page(request):
+    return render(request, 'core/module_placeholder.html', {
+        'module_title': 'Drivers',
+        'module_icon': 'fa-id-card',
+        'module_description': 'Driver management features will be available here soon.'
+    })
+
+
+@user_passes_test(
+    lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
+    login_url='login'
+)
+def users_page(request):
+    return render(request, 'core/module_placeholder.html', {
+        'module_title': 'Users',
+        'module_icon': 'fa-users',
+        'module_description': 'User management features will be available here soon.'
+    })
+
+
+@user_passes_test(
+    lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
+    login_url='login'
+)
+def bookings_page(request):
+    return render(request, 'core/module_placeholder.html', {
+        'module_title': 'Bookings',
+        'module_icon': 'fa-calendar-check',
+        'module_description': 'Booking management features will be available here soon.'
+    })
