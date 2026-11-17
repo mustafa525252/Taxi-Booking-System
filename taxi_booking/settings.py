@@ -141,3 +141,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 #Razorpay
 RAZORPAY_KEY_ID = 'rzp_test_TfqpOfjY75xRen'
 RAZORPAY_KEY_SECRET = 'yhgBh1gjvIdbDKojLtwOIATs'
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

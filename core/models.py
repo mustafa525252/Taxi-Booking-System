@@ -5,6 +5,13 @@ from django.utils import timezone
 
 class AdminAccount(models.Model):
     full_name = models.CharField(max_length=150)
+
+    profile_image = models.ImageField(
+        upload_to='admin_profiles/',
+        blank=True,
+        null=True
+    )
+
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=100, unique=True)
     password = models.CharField(max_length=128)

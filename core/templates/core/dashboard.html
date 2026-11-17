@@ -324,6 +324,126 @@
     padding: 3px 7px;
     border-radius: 5px;
 }
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #222529;
+    border: 1px solid #383b3e;
+    padding: 8px 14px;
+    border-radius: 12px;
+}
+
+.admin-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #d6ae55;
+}
+
+.default-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #30291c;
+    color: #e5bd65;
+    font-size: 19px;
+}
+
+.admin-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-name {
+    color: #f5f5f5;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.admin-details small {
+    color: #d6ae55;
+    font-size: 11px;
+}
+
+@media (max-width: 768px) {
+    .admin-profile {
+        padding: 6px;
+        gap: 7px;
+    }
+
+    .admin-avatar {
+        width: 36px;
+        height: 36px;
+    }
+
+    .admin-name {
+        font-size: 12px;
+    }
+}
+/* MOBILE DASHBOARD IMPROVEMENTS */
+@media (max-width: 480px) {
+
+    .main-content {
+        padding: 12px;
+    }
+
+    .top-navbar {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        padding: 14px;
+        margin-bottom: 22px;
+    }
+
+    .navbar-left {
+        width: 100%;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .navbar-title {
+        font-size: 16px;
+    }
+
+    .navbar-left small {
+        font-size: 11px;
+    }
+
+    .navbar-right {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .admin-profile {
+        width: 100%;
+        padding: 9px 12px;
+    }
+
+    .admin-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .admin-name {
+        font-size: 13px;
+    }
+
+    .dashboard-card {
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    .dashboard-card h3 {
+        font-size: 24px;
+    }
+
+    .welcome-panel {
+        padding: 20px;
+    }
+}
 
     </style>
 </head>
@@ -401,12 +521,26 @@
 
     <div class="navbar-right">
 
-        <div class="admin-info">
-            <i class="fa-solid fa-user-shield me-2"></i>
-            {{ admin_name }}
+    <div class="admin-profile">
+
+        {% if admin_profile %}
+            <img src="{{ admin_profile.url }}"
+                 alt="Admin Profile"
+                 class="admin-avatar">
+        {% else %}
+            <div class="admin-avatar default-avatar">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+        {% endif %}
+
+        <div class="admin-details">
+            <span class="admin-name">{{ admin_name }}</span>
+            <small>Administrator</small>
         </div>
 
     </div>
+
+</div>
 
 </nav>
 

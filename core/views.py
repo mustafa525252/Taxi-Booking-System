@@ -109,15 +109,30 @@ def logout_view(request):
     lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
     login_url='login'
 )
+
+
 def dashboard(request):
+    from .models import AdminAccount
+
+    admin_account = AdminAccount.objects.filter(
+        username=request.user.username
+    ).first()
+
     context = {
-        'admin_name': request.user.username,
+        'admin_name': (
+            admin_account.full_name
+            if admin_account and admin_account.full_name
+            else request.user.username
+        ),
         'admin_email': request.user.email,
+        'admin_profile': (
+            admin_account.profile_image
+            if admin_account and admin_account.profile_image
+            else None
+        ),
     }
+
     return render(request, 'core/dashboard.html', context)
-
-
-
 
 
 def admin_register(request):
