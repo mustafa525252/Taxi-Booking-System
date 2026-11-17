@@ -26,6 +26,7 @@ class AdminAccount(models.Model):
 
 
 class AdminPasswordResetOTP(models.Model):
+
     admin = models.ForeignKey(
         AdminAccount,
         on_delete=models.CASCADE,
@@ -36,6 +37,7 @@ class AdminPasswordResetOTP(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
     is_used = models.BooleanField(default=False)
+    attempts = models.PositiveIntegerField(default=0)
 
     def is_expired(self):
         return timezone.now() >= self.expires_at

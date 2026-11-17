@@ -160,54 +160,256 @@
                 flex-direction: column;
             }
         }
+
+/* SIDEBAR */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #191c1f;
+    padding: 28px 18px;
+    border-right: 1px solid #303438;
+    display: flex;
+    flex-direction: column;
+    z-index: 1050;
+    transition: transform 0.3s ease;
+}
+
+.brand {
+    color: #d6ae55;
+    font-size: 23px;
+    font-weight: bold;
+    margin-bottom: 45px;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    color: #b8bdc2;
+    text-decoration: none;
+    padding: 13px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: 0.2s ease;
+}
+
+.sidebar a.active,
+.sidebar a:hover {
+    background: #30291c;
+    color: #e5bd65;
+}
+
+/* LOGOUT AT BOTTOM */
+.sidebar .logout-link {
+    margin-top: auto;
+    color: #ff8585;
+}
+
+/* MAIN CONTENT */
+.main-content {
+    margin-left: 250px;
+    padding: 30px;
+}
+
+/* TOP NAVBAR */
+.top-navbar {
+    min-height: 70px;
+    background: #191c1f;
+    border: 1px solid #303438;
+    border-radius: 12px;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.navbar-left,
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar-title {
+    color: #f5f5f5;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.admin-info {
+    color: #d6ae55;
+    background: #222529;
+    border: 1px solid #383b3e;
+    padding: 10px 15px;
+    border-radius: 9px;
+}
+
+.menu-toggle {
+    display: none;
+    background: #30291c;
+    border: 1px solid #594a2d;
+    color: #e5bd65;
+    padding: 9px 12px;
+    border-radius: 8px;
+}
+
+.sidebar-overlay {
+    display: none;
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay.show {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        z-index: 1040;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 16px;
+    }
+
+    .menu-toggle {
+        display: inline-block;
+    }
+
+    .top-navbar {
+        padding: 12px;
+    }
+
+    .navbar-title {
+        font-size: 17px;
+    }
+
+    .admin-info {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+.sidebar-option {
+    display: flex;
+    align-items: center;
+    color: #b8bdc2;
+    padding: 13px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: default;
+}
+
+.sidebar-option:hover {
+    background: #222529;
+    color: #e5bd65;
+}
+
+.coming-soon {
+    margin-left: auto;
+    font-size: 10px;
+    color: #d6ae55;
+    background: #30291c;
+    padding: 3px 7px;
+    border-radius: 5px;
+}
+
     </style>
 </head>
 
 <body>
 
-    <aside class="sidebar">
-        <div class="brand">
-            <i class="fa-solid fa-taxi"></i> TAXIBOOK
-        </div>
+    
+<aside class="sidebar" id="adminSidebar">
 
-        <a href="{% url 'dashboard' %}" class="active">
-            <i class="fa-solid fa-gauge-high me-2"></i> Dashboard
-        </a>
+    <div class="brand">
+        <i class="fa-solid fa-taxi"></i> TAXIBOOK
+    </div>
 
-        <a href="#">
-            <i class="fa-solid fa-car me-2"></i> Manage Vehicles
-        </a>
+    <div class="sidebar-menu">
 
-        <a href="#">
-            <i class="fa-solid fa-users me-2"></i> Manage Users
-        </a>
+    <a href="{% url 'dashboard' %}" class="active">
+        <i class="fa-solid fa-gauge-high me-2"></i>
+        Dashboard
+    </a>
 
-        <a href="#">
-            <i class="fa-solid fa-calendar-check me-2"></i> Bookings
-        </a>
+    <div class="sidebar-option">
+        <i class="fa-solid fa-id-card me-2"></i>
+        Drivers
+        <span class="coming-soon">Soon</span>
+    </div>
 
-        <a href="#">
-            <i class="fa-solid fa-chart-line me-2"></i> Reports
-        </a>
+    <div class="sidebar-option">
+        <i class="fa-solid fa-users me-2"></i>
+        Users
+        <span class="coming-soon">Soon</span>
+    </div>
 
-        <a href="{% url 'logout' %}" class="logout-link">
-            <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
-        </a>
-    </aside>
+    <div class="sidebar-option">
+        <i class="fa-solid fa-calendar-check me-2"></i>
+        Bookings
+        <span class="coming-soon">Soon</span>
+    </div>
+
+</div>
+
+    <a href="{% url 'logout' %}" class="logout-link">
+        <i class="fa-solid fa-right-from-bracket me-2"></i>
+        Logout
+    </a>
+
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 
     <main class="main-content">
 
-        <div class="topbar">
-            <div class="welcome">
-                <h2>Admin Dashboard</h2>
-                <p>Welcome back! Here's your system overview.</p>
-            </div>
+        
+<nav class="top-navbar">
 
-            <div class="admin-info">
-                <i class="fa-solid fa-user-shield me-2"></i>
-                {{ admin_name }}
-            </div>
+    <div class="navbar-left">
+
+        <button class="menu-toggle"
+                id="menuToggle"
+                type="button"
+                aria-label="Toggle navigation"
+                aria-controls="adminSidebar"
+                aria-expanded="false">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div>
+            <h4 class="navbar-title">Admin Dashboard</h4>
+            <small class="text-secondary">
+                Welcome back! Here's your system overview.
+            </small>
         </div>
+
+    </div>
+
+    <div class="navbar-right">
+
+        <div class="admin-info">
+            <i class="fa-solid fa-user-shield me-2"></i>
+            {{ admin_name }}
+        </div>
+
+    </div>
+
+</nav>
+
 
         <div class="row g-4">
 
@@ -279,5 +481,50 @@
 
     </main>
 
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const adminSidebar = document.getElementById('adminSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+    
+        function openSidebar() {
+            adminSidebar.classList.add('show');
+            sidebarOverlay.classList.add('show');
+            menuToggle.setAttribute('aria-expanded', 'true');
+            menuToggle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        }
+    
+        function closeSidebar() {
+            adminSidebar.classList.remove('show');
+            sidebarOverlay.classList.remove('show');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        }
+    
+        menuToggle.addEventListener('click', function () {
+            if (adminSidebar.classList.contains('show')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+    
+        sidebarOverlay.addEventListener('click', closeSidebar);
+    
+        // Close sidebar after selecting a navigation link on mobile
+        adminSidebar.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (window.innerWidth <= 768) {
+                    closeSidebar();
+                }
+            });
+        });
+    
+        // Reset mobile menu when returning to desktop
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 768) {
+                closeSidebar();
+            }
+        });
+    </script>
 </body>
 </html>
