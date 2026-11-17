@@ -12,6 +12,7 @@ urlpatterns = [
     path('drivers/', views.drivers_page, name='drivers'),
     path('users/', views.users_page, name='users'),
     path('bookings/', views.bookings_page, name='bookings'),
+    path('user-list/', views.user_list, name='user_list'),
     path('logout/', views.logout_view, name='logout'),
 
 ]

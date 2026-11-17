@@ -1,0 +1,241 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management | Taxi Booking System</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            background: #f5f6f8;
+            color: #252525;
+            font-family: Arial, sans-serif;
+        }
+
+        .main-content {
+            padding: 35px;
+        }
+
+        .page-title {
+            font-weight: 700;
+            color: #202020;
+        }
+
+        .user-card {
+            background: #fff;
+            border: 1px solid #e9e9e9;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 18px rgba(0,0,0,.04);
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #eee;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f4ead5;
+            color: #9b752f;
+            border-radius: 12px;
+            font-size: 19px;
+        }
+
+        .table th {
+            color: #777;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 16px 12px;
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 17px 12px;
+            vertical-align: middle;
+        }
+
+        .customer-avatar {
+            width: 38px;
+            height: 38px;
+            background: #eee8dc;
+            color: #80652f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .btn-edit {
+            background: #f4ead5;
+            color: #856323;
+            border: none;
+        }
+
+        .btn-delete {
+            background: #fdeaea;
+            color: #c0392b;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background: #ead9b7;
+            color: #684c18;
+        }
+
+        .btn-delete:hover {
+            background: #f7d5d5;
+            color: #a5281d;
+        }
+
+        .search-box {
+            max-width: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 18px;
+            }
+
+            .user-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main-content">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h2 class="page-title mb-1">User Management</h2>
+            <p class="text-muted mb-0">Manage all registered customers.</p>
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="btn btn-dark">
+            <i class="fa-solid fa-arrow-left me-2"></i>Dashboard
+        </a>
+    </div>
+
+    <div class="stat-card mb-4 d-flex align-items-center gap-3">
+        <div class="stat-icon">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div>
+            <p class="text-muted mb-1">Total Registered Users</p>
+            <h3 class="fw-bold mb-0">{{ total_users }}</h3>
+        </div>
+    </div>
+
+    <div class="user-card">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+            <div>
+                <h5 class="fw-bold mb-1">All Customers</h5>
+                <small class="text-muted">Customer account directory</small>
+            </div>
+
+            <input
+                type="text"
+                id="userSearch"
+                class="form-control search-box"
+                placeholder="Search customers..."
+            >
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="userTable">
+
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Registered On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="customer-avatar">
+                                    {{ customer.full_name|first|upper }}
+                                </div>
+                                <strong>{{ customer.full_name }}</strong>
+                            </div>
+                        </td>
+
+                        <td>{{ customer.user.email }}</td>
+
+                        <td>{{ customer.mobile }}</td>
+
+                        <td>{{ customer.created_at|date:"d M Y" }}</td>
+
+                        <td>
+                            <a href="#"
+                               class="btn btn-sm btn-edit"
+                               title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+
+                            <a href="#"
+                               class="btn btn-sm btn-delete"
+                               title="Delete">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <i class="fa-solid fa-users fa-2x text-muted mb-3"></i>
+                            <h6>No customers registered yet</h6>
+                            <p class="text-muted mb-0">
+                                Registered customers will appear here.
+                            </p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    document.getElementById("userSearch").addEventListener("keyup", function () {
+        let searchValue = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#userTable tbody tr");
+
+        rows.forEach(function (row) {
+            row.style.display = row.innerText.toLowerCase().includes(searchValue)
+                ? ""
+                : "none";
+        });
+    });
+</script>
+
+</body>
+</html>

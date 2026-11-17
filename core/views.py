@@ -4,13 +4,13 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
-from .models import AdminAccount, AdminPasswordResetOTP
 import random
 from datetime import timedelta
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile
 # Create your views here.
 
 
@@ -497,3 +497,18 @@ def bookings_page(request):
         'module_icon': 'fa-calendar-check',
         'module_description': 'Booking management features will be available here soon.'
     })
+
+
+@user_passes_test(
+    lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
+    login_url='login'
+)
+def user_list(request):
+    customers = CustomerProfile.objects.select_related('user').all().order_by('-created_at')
+
+    context = {
+        'customers': customers,
+        'total_users': customers.count(),
+    }
+
+    return render(request, 'core/user_list.html', context)
