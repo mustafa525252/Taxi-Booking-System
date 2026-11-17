@@ -2,6 +2,8 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 from django.utils import timezone
+from django.conf import settings
+
 
 class AdminAccount(models.Model):
     full_name = models.CharField(max_length=150)
@@ -55,3 +57,22 @@ class AdminPasswordResetOTP(models.Model):
     class Meta:
         db_table = 'admin_password_reset_otp'
         ordering = ['-created_at']
+        
+        
+class CustomerProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='customer_profile'
+    )
+    full_name = models.CharField(max_length=150)
+    mobile = models.CharField(max_length=15, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.full_name
+
+    class Meta:
+        db_table = 'customer_profile'
+        verbose_name = 'Customer Profile'
+        verbose_name_plural = 'Customer Profiles'
