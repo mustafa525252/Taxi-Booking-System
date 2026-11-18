@@ -154,7 +154,8 @@
                 type="text"
                 id="userSearch"
                 class="form-control search-box"
-                placeholder="Search customers..."
+                placeholder="Search by name or email..."
+                autocomplete="off"
             >
         </div>
 
@@ -190,10 +191,10 @@
                         <td>{{ customer.created_at|date:"d M Y" }}</td>
 
                         <td>
-                            <a href="#"
-                               class="btn btn-sm btn-edit"
-                               title="Edit">
-                                <i class="fa-solid fa-pen"></i>
+                            <a href="{% url 'user_detail' customer.id %}"
+                            class="btn btn-sm btn-edit"
+                            title="View Profile">
+                                <i class="fa-solid fa-eye"></i>
                             </a>
 
                             <a href="#"
@@ -236,6 +237,27 @@
         });
     });
 </script>
+<script>
+    document.getElementById("userSearch").addEventListener("input", function () {
 
+        let searchValue = this.value.toLowerCase().trim();
+
+        let rows = document.querySelectorAll("#userTable tbody tr");
+
+        rows.forEach(function (row) {
+
+            let customerName = row.cells[0]?.innerText.toLowerCase() || "";
+            let customerEmail = row.cells[1]?.innerText.toLowerCase() || "";
+
+            let matches =
+                customerName.includes(searchValue) ||
+                customerEmail.includes(searchValue);
+
+            row.style.display = matches ? "" : "none";
+
+        });
+
+    });
+</script>
 </body>
 </html>

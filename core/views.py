@@ -11,8 +11,8 @@ from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile
-# Create your views here.
-
+from django.shortcuts import get_object_or_404
+# Create your views here.    
 
 
 def login_view(request):
@@ -512,3 +512,19 @@ def user_list(request):
     }
 
     return render(request, 'core/user_list.html', context)
+
+@user_passes_test(
+    lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
+    login_url='login'
+)
+def user_detail(request, user_id):
+    customer = get_object_or_404(
+        CustomerProfile.objects.select_related('user'),
+        id=user_id
+    )
+
+    context = {
+        'customer': customer,
+    }
+
+    return render(request, 'core/user_detail.html', context)
