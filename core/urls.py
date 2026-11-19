@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin-verify-otp/',views.admin_verify_otp,name='admin_verify_otp'),
     path('admin-reset-password/',views.admin_reset_password,name='admin_reset_password'),
     path('drivers/', views.drivers_page, name='drivers'),
+    path('drivers/<int:driver_id>/',views.driver_detail,name='driver_detail'),
     path('users/', views.users_page, name='users'),
     path('bookings/', views.bookings_page, name='bookings'),
     path('user-list/', views.user_list, name='user_list'),

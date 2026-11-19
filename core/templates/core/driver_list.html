@@ -238,10 +238,10 @@
                         <!-- Actions -->
                         <td>
                             <a
-                                href="#"
+                                href="{% url 'driver_detail' driver.id %}"
                                 class="btn btn-sm btn-view"
-                                title="Driver Profile"
-                                aria-label="View driver profile"
+                                title="View Driver Profile"
+                                aria-label="View {{ driver.user.get_full_name }} profile"
                             >
                                 <i class="fa-solid fa-eye"></i>
                             </a>

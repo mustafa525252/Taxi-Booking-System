@@ -604,3 +604,23 @@ def add_customer(request):
                 )
 
     return render(request, 'core/add_customer.html')
+
+
+
+@user_passes_test(
+    lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
+    login_url='login'
+)
+def driver_detail(request, driver_id):
+    driver = get_object_or_404(
+        Driver.objects.select_related('user'),
+        id=driver_id
+    )
+
+    context = {
+        'driver': driver,
+        'bookings': [],
+        'total_bookings': 0,
+    }
+
+    return render(request, 'core/driver_detail.html', context)
