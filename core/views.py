@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile
+from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile, Driver
 from django.shortcuts import get_object_or_404
 import uuid
 # Create your views here.    
@@ -464,16 +464,19 @@ def admin_reset_password(request):
 
 
 
+
 @user_passes_test(
     lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
     login_url='login'
 )
 def drivers_page(request):
-    return render(request, 'core/module_placeholder.html', {
-        'module_title': 'Drivers',
-        'module_icon': 'fa-id-card',
-        'module_description': 'Driver management features will be available here soon.'
+    drivers = Driver.objects.select_related('user').all().order_by('-created_at')
+
+    return render(request, 'core/driver_list.html', {
+        'drivers': drivers,
+        'total_drivers': drivers.count()
     })
+
 
 
 @user_passes_test(

@@ -1,0 +1,335 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Management | Taxi Booking System</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            background: #f5f6f8;
+            color: #252525;
+            font-family: Arial, sans-serif;
+        }
+
+        .main-content {
+            padding: 35px;
+        }
+
+        .page-title {
+            font-weight: 700;
+            color: #202020;
+        }
+
+        .driver-card {
+            background: #fff;
+            border: 1px solid #e9e9e9;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .04);
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #eee;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f4ead5;
+            color: #9b752f;
+            border-radius: 12px;
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+
+        .table th {
+            color: #777;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 16px 12px;
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 17px 12px;
+            vertical-align: middle;
+        }
+
+        .driver-avatar {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            background: #eee8dc;
+            color: #80652f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .btn-view {
+            background: #f4ead5;
+            color: #856323;
+            border: none;
+        }
+
+        .btn-view:hover {
+            background: #ead9b7;
+            color: #684c18;
+        }
+
+        .search-box {
+            max-width: 320px;
+        }
+
+        .empty-state {
+            padding: 45px 15px !important;
+        }
+
+        .empty-state i {
+            color: #b5b5b5;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 18px;
+            }
+
+            .driver-card {
+                padding: 15px;
+            }
+
+            .search-box {
+                max-width: 100%;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main-content">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h2 class="page-title mb-1">Driver Management</h2>
+            <p class="text-muted mb-0">
+                Manage all registered drivers.
+            </p>
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="btn btn-dark">
+            <i class="fa-solid fa-arrow-left me-2"></i>
+            Dashboard
+        </a>
+    </div>
+
+    <!-- Total Drivers Card -->
+    <div class="stat-card mb-4 d-flex align-items-center gap-3">
+        <div class="stat-icon">
+            <i class="fa-solid fa-id-card"></i>
+        </div>
+
+        <div>
+            <p class="text-muted mb-1">Total Registered Drivers</p>
+            <h3 class="fw-bold mb-0">{{ total_drivers }}</h3>
+        </div>
+    </div>
+
+    <!-- Driver Listing Card -->
+    <div class="driver-card">
+
+        <!-- Table Header and Search -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+            <div>
+                <h5 class="fw-bold mb-1">All Drivers</h5>
+                <small class="text-muted">
+                    Driver account directory
+                </small>
+            </div>
+
+            <!-- Search -->
+            <div class="search-box">
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                    </span>
+
+                    <input
+                        type="text"
+                        id="driverSearch"
+                        class="form-control"
+                        placeholder="Search by name, email or license..."
+                        autocomplete="off"
+                    >
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Responsive Table -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="driverTable">
+
+                <thead>
+                    <tr>
+                        <th>Driver</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>License Number</th>
+                        <th>Registered On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for driver in drivers %}
+                    <tr>
+
+                        <!-- Driver Name -->
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="driver-avatar">
+                                    {{ driver.user.first_name|first|upper|default:driver.user.username|first|upper }}
+                                </div>
+
+                                <strong>
+                                    {{ driver.user.get_full_name|default:driver.user.username }}
+                                </strong>
+                            </div>
+                        </td>
+
+                        <!-- Email -->
+                        <td>{{ driver.user.email }}</td>
+
+                        <!-- Mobile -->
+                        <td>{{ driver.mobile }}</td>
+
+                        <!-- License -->
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                {{ driver.license_number }}
+                            </span>
+                        </td>
+
+                        <!-- Registration Date -->
+                        <td>
+                            {{ driver.created_at|date:"d M Y" }}
+                        </td>
+
+                        <!-- Actions -->
+                        <td>
+                            <a
+                                href="#"
+                                class="btn btn-sm btn-view"
+                                title="Driver Profile"
+                                aria-label="View driver profile"
+                            >
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+                    <tr id="emptyRow">
+                        <td colspan="6" class="text-center empty-state">
+
+                            <i class="fa-solid fa-id-card fa-2x mb-3"></i>
+
+                            <h6 class="fw-bold">
+                                No drivers registered yet
+                            </h6>
+
+                            <p class="text-muted mb-0">
+                                Registered drivers will appear here.
+                            </p>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    {% if drivers %}
+                    <tr id="noResults" style="display: none;">
+                        <td colspan="6" class="text-center py-4">
+                            <i class="fa-solid fa-magnifying-glass text-muted mb-2"></i>
+                            <p class="fw-semibold mb-1">No matching drivers found</p>
+                            <small class="text-muted">
+                                Try searching with another name, email or license number.
+                            </small>
+                        </td>
+                    </tr>
+                    {% endif %}
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Search Functionality -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("driverSearch");
+    const table = document.getElementById("driverTable");
+    const noResults = document.getElementById("noResults");
+
+    if (!searchInput || !table) {
+        return;
+    }
+
+    searchInput.addEventListener("input", function () {
+
+        const searchValue = this.value.toLowerCase().trim();
+
+        const rows = table.querySelectorAll(
+            "tbody tr:not(#noResults):not(#emptyRow)"
+        );
+
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+
+            const rowText = row.innerText.toLowerCase();
+            const matches = rowText.includes(searchValue);
+
+            row.style.display = matches ? "" : "none";
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        if (noResults) {
+            noResults.style.display =
+                visibleCount === 0 ? "" : "none";
+        }
+
+    });
+
+});
+</script>
+
+</body>
+</html>
