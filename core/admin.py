@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomerProfile, AdminAccount, AdminPasswordResetOTP
+from .models import CustomerProfile, AdminAccount, AdminPasswordResetOTP,Driver
 
 # Register your models here.
 
@@ -7,3 +7,4 @@ from .models import CustomerProfile, AdminAccount, AdminPasswordResetOTP
 admin.site.register(CustomerProfile)
 admin.site.register(AdminAccount)
 admin.site.register(AdminPasswordResetOTP)
+admin.site.register(Driver)

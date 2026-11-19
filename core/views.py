@@ -12,6 +12,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile
 from django.shortcuts import get_object_or_404
+import uuid
 # Create your views here.    
 
 
@@ -528,3 +529,75 @@ def user_detail(request, user_id):
     }
 
     return render(request, 'core/user_detail.html', context)
+
+
+
+@user_passes_test(
+    lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
+    login_url='login'
+)
+def add_customer(request):
+
+    if request.method == 'POST':
+
+        full_name = request.POST.get('full_name', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        mobile = request.POST.get('mobile', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        # Validate required fields
+        if not all([full_name, email, mobile, password, confirm_password]):
+            messages.error(request, "All fields are required.")
+
+        elif password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+
+        elif len(password) < 8:
+            messages.error(request, "Password must contain at least 8 characters.")
+
+        elif User.objects.filter(email__iexact=email).exists():
+            messages.error(request, "This email address is already registered.")
+
+        elif CustomerProfile.objects.filter(mobile=mobile).exists():
+            messages.error(request, "This mobile number is already registered.")
+
+        else:
+            try:
+                with transaction.atomic():
+
+                    # Create a unique username
+                    username = f"customer_{uuid.uuid4().hex[:12]}"
+
+                    # Create Django User account
+                    customer_user = User.objects.create_user(
+                        username=username,
+                        email=email,
+                        password=password,
+                        is_staff=False,
+                        is_superuser=False,
+                        is_active=True
+                    )
+
+                    # Create Customer Profile
+                    CustomerProfile.objects.create(
+                        user=customer_user,
+                        full_name=full_name,
+                        mobile=mobile
+                    )
+
+                messages.success(
+                    request,
+                    "Customer registered successfully!"
+                )
+
+                return redirect('user_list')
+
+            except Exception as e:
+                print("CUSTOMER REGISTRATION ERROR:", str(e))
+                messages.error(
+                    request,
+                    "Unable to register customer. Please try again."
+                )
+
+    return render(request, 'core/add_customer.html')

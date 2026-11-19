@@ -76,3 +76,32 @@ class CustomerProfile(models.Model):
         db_table = 'customer_profile'
         verbose_name = 'Customer Profile'
         verbose_name_plural = 'Customer Profiles'
+        
+        
+
+class Driver(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='driver_profile'
+    )
+
+    license_number = models.CharField(
+        max_length=50,
+        unique=True
+    )
+
+    mobile = models.CharField(
+        max_length=15,
+        unique=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.get_full_name() or self.user.username
+
+    class Meta:
+        db_table = 'driver_profile'
+        verbose_name = 'Driver'
+        verbose_name_plural = 'Drivers'
