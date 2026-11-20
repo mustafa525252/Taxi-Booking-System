@@ -724,3 +724,60 @@ def delete_driver(request, driver_id):
         )
 
     return redirect('drivers')
+
+
+
+def user_register(request):
+
+    if request.method == 'POST':
+
+        full_name = request.POST.get('full_name', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        mobile = request.POST.get('mobile', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        if not all([full_name, email, mobile, password, confirm_password]):
+            messages.error(request, 'Please fill in all fields.')
+
+        elif password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+
+        elif User.objects.filter(email__iexact=email).exists():
+            messages.error(request, 'This email is already registered.')
+
+        elif CustomerProfile.objects.filter(mobile=mobile).exists():
+            messages.error(request, 'This phone number is already registered.')
+
+        else:
+            name_parts = full_name.split()
+
+            first_name = name_parts[0]
+            last_name = ' '.join(name_parts[1:])
+
+            username = email.split('@')[0]
+            base_username = username
+            counter = 1
+
+            while User.objects.filter(username=username).exists():
+                username = f'{base_username}{counter}'
+                counter += 1
+
+            customer_user = User.objects.create_user(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password
+            )
+
+            CustomerProfile.objects.create(
+                user=customer_user,
+                full_name=full_name,
+                mobile=mobile
+            )
+
+            messages.success(request, 'Registration successful! Please log in.')
+            return redirect('login')
+
+    return render(request, 'User/user_register.html')
