@@ -2,119 +2,377 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Driver Management | Taxi Booking System</title>
 
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
+        :root {
+            --gold: #a47d36;
+            --gold-light: #f5eddd;
+            --dark: #252525;
+            --muted: #858585;
+            --border: #eaeaea;
+            --background: #f5f6f8;
+        }
+
         body {
-            background: #f5f6f8;
-            color: #252525;
+            background: var(--background);
+            color: var(--dark);
             font-family: Arial, sans-serif;
         }
 
         .main-content {
+            max-width: 1500px;
+            margin: auto;
             padding: 35px;
         }
 
+        /* Header */
+
         .page-title {
-            font-weight: 700;
-            color: #202020;
+            font-size: 27px;
+            font-weight: 750;
+            letter-spacing: -.6px;
         }
 
-        .driver-card {
+        .page-subtitle {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .btn-dark-custom {
+            background: var(--dark);
+            color: #fff;
+            border: 1px solid var(--dark);
+            padding: 11px 18px;
+            border-radius: 9px;
+            font-weight: 600;
+            font-size: 13px;
+            transition: .2s;
+        }
+
+        .btn-dark-custom:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: white;
+        }
+
+        .btn-light-custom {
             background: #fff;
-            border: 1px solid #e9e9e9;
-            border-radius: 14px;
-            padding: 24px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, .04);
+            color: var(--dark);
+            border: 1px solid var(--border);
+            padding: 11px 18px;
+            border-radius: 9px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .btn-light-custom:hover {
+            background: #f7f7f7;
+        }
+
+        /* Statistics */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
         }
 
         .stat-card {
             background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #eee;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, .025);
         }
 
         .stat-icon {
-            width: 45px;
-            height: 45px;
+            width: 52px;
+            height: 52px;
+            border-radius: 13px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f4ead5;
-            color: #9b752f;
-            border-radius: 12px;
-            font-size: 19px;
+            background: var(--gold-light);
+            color: var(--gold);
+            font-size: 21px;
             flex-shrink: 0;
         }
 
-        .table th {
-            color: #777;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-            padding: 16px 12px;
-            white-space: nowrap;
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 5px;
         }
 
-        .table td {
-            padding: 17px 12px;
+        .stat-value {
+            font-size: 27px;
+            font-weight: 750;
+            margin: 0;
+        }
+
+        /* Main Card */
+
+        .driver-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .035);
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* Search */
+
+        .search-box {
+            width: 390px;
+            max-width: 100%;
+        }
+
+        .search-box .input-group {
+            border: 1px solid #dedede;
+            border-radius: 9px;
+            overflow: hidden;
+        }
+
+        .search-box .input-group-text {
+            background: #fff;
+            border: none;
+            color: var(--muted);
+            padding-left: 14px;
+        }
+
+        .search-box .form-control {
+            border: none;
+            box-shadow: none;
+            font-size: 13px;
+            padding: 12px 8px;
+        }
+
+        .search-box .btn {
+            border-radius: 0;
+            padding: 0 17px;
+            font-size: 13px;
+        }
+
+        /* Table */
+
+        .table-responsive {
+            border: 1px solid #eeeeee;
+            border-radius: 11px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: #fafafa;
+            color: #777;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+            padding: 16px 15px;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table tbody td {
+            padding: 17px 15px;
             vertical-align: middle;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background: #fcfbf8;
+        }
+
+        /* Driver Profile */
+
+        .driver-info {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            min-width: 170px;
         }
 
         .driver-avatar {
-            width: 38px;
-            height: 38px;
-            min-width: 38px;
-            background: #eee8dc;
-            color: #80652f;
-            border-radius: 50%;
+            width: 41px;
+            height: 41px;
+            min-width: 41px;
+            border-radius: 12px;
+            background: var(--gold-light);
+            color: var(--gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .driver-name {
+            font-weight: 700;
+            color: #292929;
+            font-size: 13px;
+        }
+
+        .driver-label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        .email-text {
+            color: #626262;
+            white-space: nowrap;
+        }
+
+        .license-badge {
+            background: #f7f7f7;
+            border: 1px solid #e9e9e9;
+            color: #555;
+            padding: 6px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .date-text {
+            color: #777;
+            white-space: nowrap;
+        }
+
+        /* Action Buttons */
+
+        .action-group {
+            display: flex;
+            gap: 7px;
+        }
+
+        .btn-action {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 12px;
+            transition: .2s;
         }
 
         .btn-view {
-            background: #f4ead5;
-            color: #856323;
-            border: none;
+            background: var(--gold-light);
+            color: var(--gold);
+            border: 1px solid transparent;
         }
 
         .btn-view:hover {
-            background: #ead9b7;
-            color: #684c18;
+            background: var(--gold);
+            color: white;
         }
 
-        .search-box {
-            max-width: 320px;
+        .btn-delete {
+            background: #fff;
+            color: #dc5555;
+            border: 1px solid #f0dada;
         }
+
+        .btn-delete:hover {
+            background: #dc5555;
+            color: white;
+        }
+
+        /* Empty State */
 
         .empty-state {
-            padding: 45px 15px !important;
+            text-align: center;
+            padding: 55px 15px !important;
         }
 
-        .empty-state i {
-            color: #b5b5b5;
+        .empty-icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 16px;
+            border-radius: 18px;
+            background: #f5f5f5;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
         }
 
-        @media (max-width: 768px) {
+        /* Messages */
+
+        .alert {
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        /* Footer */
+
+        .table-footer {
+            padding-top: 17px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* Responsive */
+
+        @media(max-width: 768px) {
             .main-content {
                 padding: 18px;
             }
 
             .driver-card {
-                padding: 15px;
+                padding: 17px;
+            }
+
+            .page-title {
+                font-size: 23px;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .header-actions a {
+                flex: 1;
+                text-align: center;
             }
 
             .search-box {
-                max-width: 100%;
                 width: 100%;
             }
         }
@@ -126,210 +384,315 @@
 <div class="main-content">
 
     <!-- Page Header -->
+
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
         <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="text-uppercase fw-bold"
+                      style="font-size:10px; letter-spacing:1.5px; color:#a47d36;">
+                    MANAGEMENT / DRIVERS
+                </span>
+            </div>
+
             <h2 class="page-title mb-1">Driver Management</h2>
-            <p class="text-muted mb-0">
-                Manage all registered drivers.
+
+            <p class="page-subtitle mb-0">
+                Manage, register and monitor your driver accounts.
             </p>
         </div>
 
-        <a href="{% url 'dashboard' %}" class="btn btn-dark">
-            <i class="fa-solid fa-arrow-left me-2"></i>
-            Dashboard
-        </a>
-    </div>
+        <div class="d-flex gap-2 flex-wrap header-actions">
 
-    <!-- Total Drivers Card -->
-    <div class="stat-card mb-4 d-flex align-items-center gap-3">
-        <div class="stat-icon">
-            <i class="fa-solid fa-id-card"></i>
+            <a href="{% url 'dashboard' %}" class="btn btn-light-custom">
+                <i class="fa-solid fa-arrow-left me-2"></i>
+                Dashboard
+            </a>
+
+            <a href="{% url 'add_driver' %}" class="btn btn-dark-custom">
+                <i class="fa-solid fa-plus me-2"></i>
+                Add Driver
+            </a>
+
         </div>
 
-        <div>
-            <p class="text-muted mb-1">Total Registered Drivers</p>
-            <h3 class="fw-bold mb-0">{{ total_drivers }}</h3>
-        </div>
     </div>
 
-    <!-- Driver Listing Card -->
+    <!-- Django Messages -->
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3">
+                {{ message }}
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Statistics -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                <i class="fa-solid fa-id-card"></i>
+            </div>
+
+            <div>
+                <p class="stat-label">Total Registered Drivers</p>
+                <h3 class="stat-value">{{ total_drivers }}</h3>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Driver Listing -->
+
     <div class="driver-card">
 
-        <!-- Table Header and Search -->
+        <!-- Section Header -->
+
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
 
             <div>
-                <h5 class="fw-bold mb-1">All Drivers</h5>
-                <small class="text-muted">
-                    Driver account directory
-                </small>
+                <h5 class="section-title">All Drivers</h5>
+
+                <p class="section-subtitle mb-0">
+                    View and manage your registered driver directory.
+                </p>
             </div>
 
-            <!-- Search -->
-            <div class="search-box">
+            <!-- Search Form -->
+
+            <form method="GET"
+                  action="{% url 'drivers' %}"
+                  class="search-box">
+
                 <div class="input-group">
-                    <span class="input-group-text bg-white">
-                        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-magnifying-glass"></i>
                     </span>
 
                     <input
                         type="text"
-                        id="driverSearch"
+                        name="q"
                         class="form-control"
-                        placeholder="Search by name, email or license..."
-                        autocomplete="off"
+                        placeholder="Search drivers..."
+                        value="{{ search_query }}"
                     >
+
+                    <button type="submit" class="btn btn-dark">
+                        Search
+                    </button>
+
                 </div>
-            </div>
+
+                {% if search_query %}
+                    <a href="{% url 'drivers' %}"
+                       class="text-decoration-none small mt-2 d-inline-block"
+                       style="color:#a47d36;">
+                        <i class="fa-solid fa-xmark me-1"></i>
+                        Clear search
+                    </a>
+                {% endif %}
+
+            </form>
 
         </div>
 
-        <!-- Responsive Table -->
+        <!-- Driver Table -->
+
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="driverTable">
+
+            <table class="table table-hover align-middle">
 
                 <thead>
                     <tr>
                         <th>Driver</th>
-                        <th>Email</th>
-                        <th>Mobile</th>
+                        <th>Email Address</th>
+                        <th>Mobile Number</th>
                         <th>License Number</th>
                         <th>Registered On</th>
-                        <th>Actions</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
 
                     {% for driver in drivers %}
+
                     <tr>
 
-                        <!-- Driver Name -->
+                        <!-- Driver -->
+
                         <td>
-                            <div class="d-flex align-items-center gap-2">
+                            <div class="driver-info">
+
                                 <div class="driver-avatar">
-                                    {{ driver.user.first_name|first|upper|default:driver.user.username|first|upper }}
+                                    {{ driver.user.first_name|default:driver.user.username|first|upper }}
                                 </div>
 
-                                <strong>
-                                    {{ driver.user.get_full_name|default:driver.user.username }}
-                                </strong>
+                                <div>
+                                    <div class="driver-name">
+                                        {{ driver.user.get_full_name|default:driver.user.username }}
+                                    </div>
+
+                                    <div class="driver-label">
+                                        Driver ID #{{ driver.id }}
+                                    </div>
+                                </div>
+
                             </div>
                         </td>
 
                         <!-- Email -->
-                        <td>{{ driver.user.email }}</td>
+
+                        <td>
+                            <span class="email-text">
+                                {{ driver.user.email|default:"Not provided" }}
+                            </span>
+                        </td>
 
                         <!-- Mobile -->
-                        <td>{{ driver.mobile }}</td>
+
+                        <td>
+                            {{ driver.mobile }}
+                        </td>
 
                         <!-- License -->
+
                         <td>
-                            <span class="badge bg-light text-dark border">
+                            <span class="license-badge">
                                 {{ driver.license_number }}
                             </span>
                         </td>
 
                         <!-- Registration Date -->
+
                         <td>
-                            {{ driver.created_at|date:"d M Y" }}
+                            <span class="date-text">
+                                <i class="fa-regular fa-calendar me-1"></i>
+                                {{ driver.created_at|date:"d M Y" }}
+                            </span>
                         </td>
 
                         <!-- Actions -->
+
                         <td>
-                            <a
-                                href="{% url 'driver_detail' driver.id %}"
-                                class="btn btn-sm btn-view"
-                                title="View Driver Profile"
-                                aria-label="View {{ driver.user.get_full_name }} profile"
-                            >
-                                <i class="fa-solid fa-eye"></i>
-                            </a>
+                            <div class="action-group justify-content-center">
+
+                                <!-- View -->
+
+                                <a href="{% url 'driver_detail' driver.id %}"
+                                   class="btn-action btn-view"
+                                   title="View Driver Profile"
+                                   aria-label="View driver profile">
+
+                                    <i class="fa-solid fa-eye"></i>
+
+                                </a>
+
+                                <!-- Delete -->
+
+                                <form method="POST"
+                                      action="{% url 'delete_driver' driver.id %}"
+                                      onsubmit="return confirm('Are you sure you want to delete this driver? This action cannot be undone.');">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit"
+                                            class="btn-action btn-delete"
+                                            title="Delete Driver"
+                                            aria-label="Delete driver">
+
+                                        <i class="fa-solid fa-trash"></i>
+
+                                    </button>
+
+                                </form>
+
+                            </div>
                         </td>
 
                     </tr>
 
                     {% empty %}
-                    <tr id="emptyRow">
-                        <td colspan="6" class="text-center empty-state">
 
-                            <i class="fa-solid fa-id-card fa-2x mb-3"></i>
+                    <tr>
+                        <td colspan="6" class="empty-state">
 
-                            <h6 class="fw-bold">
-                                No drivers registered yet
-                            </h6>
+                            <div class="empty-icon">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
 
-                            <p class="text-muted mb-0">
-                                Registered drivers will appear here.
-                            </p>
+                            {% if search_query %}
+
+                                <h6 class="fw-bold">No matching drivers found</h6>
+
+                                <p class="text-muted small mb-3">
+                                    Try searching with another name, email, mobile or license number.
+                                </p>
+
+                                <a href="{% url 'drivers' %}"
+                                   class="btn btn-light-custom">
+                                    Clear Search
+                                </a>
+
+                            {% else %}
+
+                                <h6 class="fw-bold">No drivers registered yet</h6>
+
+                                <p class="text-muted small mb-3">
+                                    Start building your driver directory by registering your first driver.
+                                </p>
+
+                                <a href="{% url 'add_driver' %}"
+                                   class="btn btn-dark-custom">
+                                    <i class="fa-solid fa-plus me-2"></i>
+                                    Add Your First Driver
+                                </a>
+
+                            {% endif %}
 
                         </td>
                     </tr>
+
                     {% endfor %}
 
-                    {% if drivers %}
-                    <tr id="noResults" style="display: none;">
-                        <td colspan="6" class="text-center py-4">
-                            <i class="fa-solid fa-magnifying-glass text-muted mb-2"></i>
-                            <p class="fw-semibold mb-1">No matching drivers found</p>
-                            <small class="text-muted">
-                                Try searching with another name, email or license number.
-                            </small>
-                        </td>
-                    </tr>
-                    {% endif %}
-
                 </tbody>
+
             </table>
+
+        </div>
+
+        <!-- Table Footer -->
+
+        <div class="table-footer d-flex justify-content-between flex-wrap gap-2">
+
+            <span>
+                <i class="fa-solid fa-circle-info me-1"></i>
+                Driver account directory
+            </span>
+
+            <span>
+                Total registered: <strong>{{ total_drivers }}</strong>
+            </span>
+
         </div>
 
     </div>
 
 </div>
 
-<!-- Search Functionality -->
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+<!-- Bootstrap JS -->
 
-    const searchInput = document.getElementById("driverSearch");
-    const table = document.getElementById("driverTable");
-    const noResults = document.getElementById("noResults");
-
-    if (!searchInput || !table) {
-        return;
-    }
-
-    searchInput.addEventListener("input", function () {
-
-        const searchValue = this.value.toLowerCase().trim();
-
-        const rows = table.querySelectorAll(
-            "tbody tr:not(#noResults):not(#emptyRow)"
-        );
-
-        let visibleCount = 0;
-
-        rows.forEach(function (row) {
-
-            const rowText = row.innerText.toLowerCase();
-            const matches = rowText.includes(searchValue);
-
-            row.style.display = matches ? "" : "none";
-
-            if (matches) {
-                visibleCount++;
-            }
-        });
-
-        if (noResults) {
-            noResults.style.display =
-                visibleCount === 0 ? "" : "none";
-        }
-
-    });
-
-});
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

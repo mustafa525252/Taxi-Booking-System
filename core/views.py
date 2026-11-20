@@ -13,6 +13,7 @@ from django.db import transaction
 from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile, Driver
 from django.shortcuts import get_object_or_404
 import uuid
+from django.db.models import Q
 # Create your views here.    
 
 
@@ -463,19 +464,32 @@ def admin_reset_password(request):
     return render(request, 'core/admin_reset_password.html')
 
 
-
-
 @user_passes_test(
     lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
     login_url='login'
 )
 def drivers_page(request):
+    search_query = request.GET.get('q', '').strip()
+
     drivers = Driver.objects.select_related('user').all().order_by('-created_at')
 
-    return render(request, 'core/driver_list.html', {
+    if search_query:
+        drivers = drivers.filter(
+            Q(user__first_name__icontains=search_query) |
+            Q(user__last_name__icontains=search_query) |
+            Q(user__username__icontains=search_query) |
+            Q(user__email__icontains=search_query) |
+            Q(mobile__icontains=search_query) |
+            Q(license_number__icontains=search_query)
+        )
+
+    context = {
         'drivers': drivers,
-        'total_drivers': drivers.count()
-    })
+        'total_drivers': Driver.objects.count(),
+        'search_query': search_query,
+    }
+
+    return render(request, 'core/driver_list.html', context)
 
 
 
@@ -624,3 +638,89 @@ def driver_detail(request, driver_id):
     }
 
     return render(request, 'core/driver_detail.html', context)
+
+@user_passes_test(
+    lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
+    login_url='login'
+)
+def add_driver(request):
+
+    if request.method == 'POST':
+        full_name = request.POST.get('full_name', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        mobile = request.POST.get('mobile', '').strip()
+        license_number = request.POST.get('license_number', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        if not all([
+            full_name, email, mobile,
+            license_number, password, confirm_password
+        ]):
+            messages.error(request, 'Please fill in all fields.')
+
+        elif password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+
+        elif User.objects.filter(email__iexact=email).exists():
+            messages.error(request, 'This email is already registered.')
+
+        elif Driver.objects.filter(mobile=mobile).exists():
+            messages.error(request, 'This mobile number is already registered.')
+
+        elif Driver.objects.filter(license_number=license_number).exists():
+            messages.error(request, 'This license number is already registered.')
+
+        else:
+            name_parts = full_name.split()
+            first_name = name_parts[0]
+            last_name = ' '.join(name_parts[1:])
+
+            username = email.split('@')[0]
+            base_username = username
+            counter = 1
+
+            while User.objects.filter(username=username).exists():
+                username = f'{base_username}{counter}'
+                counter += 1
+
+            driver_user = User.objects.create_user(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password
+            )
+
+            Driver.objects.create(
+                user=driver_user,
+                mobile=mobile,
+                license_number=license_number
+            )
+
+            messages.success(request, 'Driver registered successfully!')
+            return redirect('drivers')
+
+    return render(request, 'core/add_driver.html')
+
+
+@user_passes_test(
+    lambda user: user.is_authenticated and user.is_staff and user.is_superuser,
+    login_url='login'
+)
+def delete_driver(request, driver_id):
+    if request.method == 'POST':
+        driver = get_object_or_404(Driver, id=driver_id)
+
+        user = driver.user
+        driver_name = user.get_full_name() or user.username
+
+        driver.delete()
+        user.delete()
+
+        messages.success(
+            request,
+            f'Driver "{driver_name}" has been deleted successfully.'
+        )
+
+    return redirect('drivers')
