@@ -1,447 +1,168 @@
 
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sign In | Taxi Booking System</title>
+    <title>Admin Login | Taxi Booking System</title>
 
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
         :root {
-            --gold: #d6ad60;
-            --gold-light: #edcb86;
-            --dark: #101114;
-            --card: #191a1f;
-            --border: #303137;
-            --muted: #92939b;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            --gold: #a47d36;
+            --gold-light: #f7f0e2;
+            --dark: #252525;
+            --muted: #858585;
+            --border: #eae7e0;
         }
 
         body {
             min-height: 100vh;
-            background:
-                radial-gradient(circle at 15% 15%, rgba(214,173,96,.09), transparent 30%),
-                radial-gradient(circle at 85% 85%, rgba(214,173,96,.06), transparent 30%),
-                var(--dark);
-            color: #fff;
-            font-family: 'Segoe UI', sans-serif;
+            background: #f7f7f5;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 30px 15px;
+            padding: 20px 15px;
+            font-family: Arial, sans-serif;
         }
 
-        .login-container {
+        .login-card {
             width: 100%;
-            max-width: 1080px;
-            min-height: 650px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background: var(--card);
+            max-width: 440px;
+            background: white;
             border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 25px 80px rgba(0,0,0,.5);
-        }
-
-        /* LEFT SIDE */
-
-        .visual-panel {
-            position: relative;
-            padding: 45px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background:
-                linear-gradient(180deg, rgba(12,13,15,.55), rgba(12,13,15,.95)),
-                url("https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1200&q=85");
-            background-position: center;
-            background-size: cover;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 13px;
+            border-radius: 18px;
+            padding: 40px;
+            box-shadow: 0 12px 40px rgba(0,0,0,.045);
         }
 
         .brand-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 13px;
+            width: 58px;
+            height: 58px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--gold);
-            color: #111;
-            font-size: 21px;
-        }
-
-        .brand-text {
-            font-size: 19px;
-            font-weight: 800;
-            letter-spacing: .7px;
-        }
-
-        .brand-text span {
+            margin: 0 auto 18px;
+            border-radius: 17px;
+            background: var(--gold-light);
             color: var(--gold);
+            font-size: 23px;
         }
 
-        .visual-content {
-            max-width: 400px;
-        }
-
-        .visual-content .eyebrow {
-            color: var(--gold-light);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 18px;
-        }
-
-        .visual-content h1 {
-            font-size: clamp(35px, 4vw, 49px);
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 20px;
-        }
-
-        .visual-content h1 span {
-            color: var(--gold);
-        }
-
-        .visual-content p {
-            color: #c4c4c4;
-            font-size: 14px;
-            line-height: 1.9;
-        }
-
-        .visual-footer {
-            color: #aaa;
-            font-size: 12px;
-        }
-
-        /* RIGHT SIDE */
-
-        .form-panel {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 55px 45px;
-        }
-
-        .login-form {
-            width: 100%;
-            max-width: 380px;
-        }
-
-        .welcome-label {
-            display: inline-block;
-            background: rgba(214,173,96,.12);
-            color: var(--gold-light);
-            border: 1px solid rgba(214,173,96,.2);
-            padding: 8px 14px;
-            border-radius: 30px;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 1.7px;
-            margin-bottom: 20px;
-        }
-
-        .login-form h2 {
-            font-size: 31px;
-            font-weight: 800;
-            margin-bottom: 9px;
+        .heading {
+            font-size: 25px;
+            font-weight: 750;
+            color: var(--dark);
         }
 
         .subtitle {
+            font-size: 13px;
             color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 32px;
         }
 
-        /* ROLE SELECTOR */
-
-        .role-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 6px;
-            background: #111216;
-            border: 1px solid var(--border);
-            border-radius: 11px;
-            margin-bottom: 27px;
+        .admin-badge {
+            display: inline-block;
+            background: var(--gold-light);
+            color: var(--gold);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
         }
 
-        .role-option {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .role-option input {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .role-option span {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 9px;
-            padding: 13px 8px;
-            border-radius: 8px;
-            color: #a5a5aa;
+        .form-label {
             font-size: 12px;
             font-weight: 700;
-            transition: .25s;
+            color: #444;
+            margin-bottom: 7px;
         }
 
-        .role-option input:checked + span {
-            background: var(--gold);
-            color: #151515;
-            box-shadow: 0 4px 15px rgba(214,173,96,.15);
-        }
-
-        .role-option input:focus-visible + span {
-            outline: 2px solid var(--gold-light);
-            outline-offset: 3px;
-        }
-
-        /* INPUTS */
-
-        .field-label {
-            display: block;
-            color: #dedee0;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .input-wrapper {
-            display: flex;
-            align-items: center;
-            background: #111216;
-            border: 1px solid var(--border);
+        .input-group {
+            border: 1px solid #e5e2dc;
             border-radius: 9px;
-            margin-bottom: 22px;
-            transition: .25s;
+            overflow: hidden;
         }
 
-        .input-wrapper:focus-within {
+        .input-group:focus-within {
             border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(214,173,96,.07);
+            box-shadow: 0 0 0 3px rgba(164,125,54,.10);
         }
 
-        .input-icon {
-            padding-left: 15px;
-            color: var(--gold);
-            font-size: 14px;
-        }
-
-        .input-wrapper input {
-            width: 100%;
-            min-width: 0;
-            background: transparent;
+        .input-group-text {
+            background: white;
             border: none;
-            outline: none;
-            color: #fff;
-            padding: 15px 13px;
+            color: #999;
+            padding-left: 14px;
+        }
+
+        .form-control {
+            border: none;
+            box-shadow: none !important;
             font-size: 13px;
+            padding: 12px 10px;
         }
 
-        .input-wrapper input::placeholder {
-            color: #70717a;
-        }
-
-        .toggle-password {
-            background: transparent;
+        .password-toggle {
+            background: white;
             border: none;
-            color: #92939b;
-            padding: 12px 15px;
+            color: #999;
+            padding: 0 14px;
             cursor: pointer;
-        }
-
-        .toggle-password:hover {
-            color: var(--gold);
-        }
-
-        /* REMEMBER */
-
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin: 3px 0 27px;
-        }
-
-        .remember-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #aaa;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .remember-label input {
-            accent-color: var(--gold);
         }
 
         .forgot-link {
             color: var(--gold);
-            text-decoration: none;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
+            text-decoration: none;
         }
 
         .forgot-link:hover {
-            color: var(--gold-light);
+            text-decoration: underline;
         }
-
-        /* BUTTON */
 
         .login-btn {
             width: 100%;
-            border: none;
+            background: var(--dark);
+            border: 1px solid var(--dark);
+            color: white;
             border-radius: 9px;
-            padding: 15px;
-            background: var(--gold);
-            color: #151515;
+            padding: 13px;
             font-size: 13px;
-            font-weight: 800;
-            letter-spacing: .7px;
-            transition: .3s;
+            font-weight: 700;
+            transition: .2s;
         }
 
         .login-btn:hover {
-            background: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(214,173,96,.2);
+            background: var(--gold);
+            border-color: var(--gold);
+            color: white;
         }
 
-        .login-btn i {
-            margin-left: 8px;
-        }
-
-        .security-note {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            color: #777982;
-            font-size: 11px;
-            margin-top: 25px;
-        }
-
-        .security-note i {
-            color: var(--gold);
-        }
-
-        /* DJANGO MESSAGES */
-
-        .message-alert {
-            border-radius: 8px;
-            padding: 11px 13px;
+        .alert {
             font-size: 12px;
-            margin-bottom: 18px;
-            border: 1px solid transparent;
+            border-radius: 9px;
         }
 
-        .message-alert.error {
-            background: rgba(220,53,69,.12);
-            border-color: rgba(220,53,69,.3);
-            color: #ff929c;
+        .footer-text {
+            color: #aaa;
+            font-size: 10px;
+            text-align: center;
+            margin-top: 28px;
         }
 
-        .message-alert.success {
-            background: rgba(25,135,84,.12);
-            border-color: rgba(25,135,84,.3);
-            color: #8de0b5;
-        }
-
-        .message-alert.warning {
-            background: rgba(255,193,7,.1);
-            border-color: rgba(255,193,7,.3);
-            color: #f5d77c;
-        }
-
-        /* RESPONSIVE */
-
-        @media (max-width: 850px) {
-            .login-container {
-                max-width: 500px;
-                grid-template-columns: 1fr;
+        @media(max-width: 480px) {
+            .login-card {
+                padding: 28px 21px;
             }
 
-            .visual-panel {
-                min-height: 220px;
-                padding: 30px;
-            }
-
-            .visual-content {
-                margin-top: 45px;
-            }
-
-            .visual-content h1 {
-                font-size: 32px;
-            }
-
-            .visual-footer {
-                display: none;
-            }
-
-            .form-panel {
-                padding: 40px 30px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                padding: 15px 10px;
-            }
-
-            .login-container {
-                border-radius: 14px;
-            }
-
-            .visual-panel {
-                min-height: 190px;
-                padding: 23px;
-            }
-
-            .visual-content {
-                margin-top: 30px;
-            }
-
-            .visual-content h1 {
-                font-size: 27px;
-            }
-
-            .visual-content p {
-                font-size: 12px;
-            }
-
-            .form-panel {
-                padding: 35px 23px;
-            }
-
-            .login-form h2 {
-                font-size: 27px;
+            .heading {
+                font-size: 22px;
             }
         }
     </style>
@@ -449,298 +170,159 @@
 
 <body>
 
-<div class="login-container">
+<div class="login-card">
 
-    <!-- LEFT BRAND PANEL -->
+    <!-- Brand -->
 
-    <div class="visual-panel">
+    <div class="text-center mb-4">
 
-        <div class="brand">
-            <div class="brand-icon">
-                <i class="fa-solid fa-car-side"></i>
-            </div>
-
-            <div class="brand-text">
-                TAXI<span>BOOK</span>
-            </div>
+        <div class="brand-icon">
+            <i class="fa-solid fa-taxi"></i>
         </div>
 
-        <div class="visual-content">
-            <div class="eyebrow">
-                Your Journey, Our Priority
-            </div>
-
-            <h1>
-                Travel Smart.<br>
-                Travel <span>Better.</span>
-            </h1>
-
-            <p>
-                Experience convenient and reliable taxi booking.
-                Manage your journeys, access your account, and
-                enjoy a smoother travel experience.
-            </p>
+        <div class="text-uppercase fw-bold mb-2"
+             style="font-size:10px; letter-spacing:2px; color:#a47d36;">
+            TAXI BOOKING SYSTEM
         </div>
 
-        <div class="visual-footer">
-            &copy; 2026 Taxi Booking System. All rights reserved.
-        </div>
+        <span class="admin-badge">
+            <i class="fa-solid fa-shield-halved me-1"></i>
+            ADMIN PORTAL
+        </span>
+
+        <h2 class="heading mb-2">Welcome Back</h2>
+
+        <p class="subtitle mb-0">
+            Sign in to access your administration dashboard.
+        </p>
 
     </div>
 
-    <!-- RIGHT LOGIN PANEL -->
+    <!-- Django Messages -->
 
-    <div class="form-panel">
-
-        <div class="login-form">
-
-            <div class="welcome-label">
-                SECURE ACCOUNT ACCESS
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"></button>
             </div>
+        {% endfor %}
+    {% endif %}
 
-            <h2>Welcome Back</h2>
+    <!-- Login Form -->
 
-            <p class="subtitle">
-                Sign in to continue to your account.
-            </p>
+    
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
 
-            <!-- DJANGO MESSAGES -->
+        <!-- Admin Role -->
+        <input type="hidden" name="role" value="admin">
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="message-alert {{ message.tags }}">
-                        <i class="fa-solid fa-circle-info me-2"></i>
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+        <!-- Username -->
+        <div class="mb-3">
 
-            <!-- ROLE SELECTION -->
+            <label class="form-label">Username</label>
 
-            <div class="role-selector">
-
-                <label class="role-option">
-                    <input
-                        type="radio"
-                        name="user_role"
-                        value="user"
-                        checked
-                        onchange="changeRole()"
-                    >
-
-                    <span>
-                        <i class="fa-solid fa-user"></i>
-                        Normal User
-                    </span>
-                </label>
-
-                <label class="role-option">
-                    <input
-                        type="radio"
-                        name="user_role"
-                        value="admin"
-                        onchange="changeRole()"
-                    >
-
-                    <span>
-                        <i class="fa-solid fa-shield-halved"></i>
-                        Admin
-                    </span>
-                </label>
-
-            </div>
-
-            <!-- LOGIN FORM -->
-
-            <form method="POST" action="{% url 'login' %}">
-
-                {% csrf_token %}
-
-                <!-- Selected role sent to Django -->
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa-regular fa-user"></i>
+                </span>
 
                 <input
-                    type="hidden"
-                    name="role"
-                    id="roleInput"
-                    value="user"
+                    type="text"
+                    name="identity"
+                    class="form-control"
+                    placeholder="Enter your admin username"
+                    autocomplete="username"
+                    required
                 >
-
-                <!-- EMAIL / USERNAME -->
-
-                <div class="mb-1">
-
-                    <label class="field-label" id="identityLabel">
-                        Email Address
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <i
-                            class="fa-solid fa-envelope input-icon"
-                            id="identityIcon"
-                        ></i>
-
-                        <input
-                            type="email"
-                            name="identity"
-                            id="identityInput"
-                            placeholder="Enter your email address"
-                            autocomplete="username"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-                <!-- PASSWORD -->
-
-                <div>
-
-                    <label class="field-label">
-                        Password
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <i class="fa-solid fa-lock input-icon"></i>
-
-                        <input
-                            type="password"
-                            name="password"
-                            id="passwordInput"
-                            placeholder="Enter your password"
-                            autocomplete="current-password"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            class="toggle-password"
-                            onclick="togglePassword()"
-                            aria-label="Show or hide password"
-                        >
-                            <i
-                                class="fa-solid fa-eye"
-                                id="passwordIcon"
-                            ></i>
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <!-- REMEMBER ME -->
-
-                <div class="form-options">
-
-                    <label class="remember-label">
-                        <input
-                            type="checkbox"
-                            name="remember"
-                        >
-                        Remember me
-                    </label>
-
-                    <a href="{% url 'admin_forgot_password' %}" class="forgot-link">
-                        Forgot Password?
-                    </a>
-
-                </div>
-
-                <!-- LOGIN BUTTON -->
-
-                <button type="submit" class="login-btn">
-                    SIGN IN
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-
-            </form>
-
-            <div class="security-note">
-                <i class="fa-solid fa-shield-halved"></i>
-                Your account is protected with secure access.
             </div>
 
         </div>
 
+        <!-- Password -->
+        <div class="mb-3">
+
+            <label class="form-label">Password</label>
+
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa-solid fa-lock"></i>
+                </span>
+
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    class="form-control"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="password-toggle"
+                    onclick="togglePassword()"
+                    aria-label="Show or hide password"
+                >
+                    <i class="fa-regular fa-eye" id="passwordIcon"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Remember Me and Forgot Password -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <label class="small text-muted">
+                <input type="checkbox" name="remember" class="me-1">
+                Remember me
+            </label>
+
+            <a href="{% url 'admin_forgot_password' %}"
+            class="forgot-link">
+                Forgot Password?
+            </a>
+
+        </div>
+
+        <!-- Login Button -->
+        <button type="submit" class="login-btn">
+            SIGN IN
+            <i class="fa-solid fa-arrow-right ms-2"></i>
+        </button>
+
+    </form>
+
+
+    <div class="footer-text">
+        <i class="fa-solid fa-lock me-1"></i>
+        Secure Administrator Access
+        <br><br>
+        © 2026 Taxi Booking System. All rights reserved.
     </div>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-
-    // Change login identity according to selected role
-
-    function changeRole() {
-
-        const selectedRole = document.querySelector(
-            'input[name="user_role"]:checked'
-        ).value;
-
-        const label = document.getElementById("identityLabel");
-        const input = document.getElementById("identityInput");
-        const icon = document.getElementById("identityIcon");
-        const roleInput = document.getElementById("roleInput");
-
-        // Send selected role to Django
-
-        roleInput.value = selectedRole;
-
-        if (selectedRole === "admin") {
-
-            label.textContent = "Admin Username";
-
-            input.type = "text";
-            input.placeholder = "Enter your admin username";
-
-            icon.className =
-                "fa-solid fa-user-shield input-icon";
-
-        } else {
-
-            label.textContent = "Email Address";
-
-            input.type = "email";
-            input.placeholder = "Enter your email address";
-
-            icon.className =
-                "fa-solid fa-envelope input-icon";
-
-        }
-
-        // Clear previous identity when switching roles
-
-        input.value = "";
-    }
-
-    // Show / Hide Password
-
     function togglePassword() {
 
-        const passwordInput =
-            document.getElementById("passwordInput");
+        const password = document.getElementById('password');
+        const icon = document.getElementById('passwordIcon');
 
-        const passwordIcon =
-            document.getElementById("passwordIcon");
-
-        if (passwordInput.type === "password") {
-
-            passwordInput.type = "text";
-
-            passwordIcon.className =
-                "fa-solid fa-eye-slash";
-
+        if (password.type === 'password') {
+            password.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
         } else {
-
-            passwordInput.type = "password";
-
-            passwordIcon.className =
-                "fa-solid fa-eye";
-
+            password.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
         }
     }
-
 </script>
 
 </body>

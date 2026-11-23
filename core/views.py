@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 import random
+import re
 from datetime import timedelta
 from django.utils import timezone
 from django.core.mail import send_mail
@@ -99,7 +100,10 @@ def login_view(request):
             else:
                 messages.error(request, "Invalid account type.")
 
-    return render(request, 'core/login.html')
+    if request.GET.get('role') == 'admin':
+        return render(request, 'User/admin_login.html')
+
+    return render(request, 'User/user_login.html')
 
 
 def logout_view(request):
@@ -135,6 +139,10 @@ def dashboard(request):
     }
 
     return render(request, 'core/dashboard.html', context)
+
+@login_required
+def user_dashboard(request):
+    return render(request, 'User/user_dashboard.html')
 
 
 def admin_register(request):
@@ -727,6 +735,9 @@ def delete_driver(request, driver_id):
 
 
 
+
+import re
+
 def user_register(request):
 
     if request.method == 'POST':
@@ -737,24 +748,47 @@ def user_register(request):
         password = request.POST.get('password', '')
         confirm_password = request.POST.get('confirm_password', '')
 
+        # 1. Required field validation
         if not all([full_name, email, mobile, password, confirm_password]):
             messages.error(request, 'Please fill in all fields.')
 
+        # 2. Full name validation
+        elif not re.fullmatch(r"[A-Za-z ]+", full_name):
+            messages.error(request, 'Full name should contain only letters and spaces.')
+
+        # 3. Email validation
+        elif not re.fullmatch(r'[^@\s]+@[^@\s]+\.[^@\s]+', email):
+            messages.error(request, 'Please enter a valid email address.')
+
+        # 4. Mobile number validation
+        elif not re.fullmatch(r'[0-9]{10}', mobile):
+            messages.error(request, 'Please enter a valid 10-digit mobile number.')
+
+        # 5. Password length validation
+        elif len(password) < 8:
+            messages.error(request, 'Password must contain at least 8 characters.')
+
+        # 6. Confirm password validation
         elif password != confirm_password:
             messages.error(request, 'Passwords do not match.')
 
+        # 7. Duplicate email validation
         elif User.objects.filter(email__iexact=email).exists():
             messages.error(request, 'This email is already registered.')
 
+        # 8. Duplicate mobile validation
         elif CustomerProfile.objects.filter(mobile=mobile).exists():
             messages.error(request, 'This phone number is already registered.')
 
         else:
+
+            # Split full name
             name_parts = full_name.split()
 
             first_name = name_parts[0]
             last_name = ' '.join(name_parts[1:])
 
+            # Generate unique username
             username = email.split('@')[0]
             base_username = username
             counter = 1
@@ -763,6 +797,7 @@ def user_register(request):
                 username = f'{base_username}{counter}'
                 counter += 1
 
+            # Create Django User
             customer_user = User.objects.create_user(
                 username=username,
                 first_name=first_name,
@@ -771,13 +806,19 @@ def user_register(request):
                 password=password
             )
 
+            # Create Customer Profile
             CustomerProfile.objects.create(
                 user=customer_user,
                 full_name=full_name,
                 mobile=mobile
             )
 
-            messages.success(request, 'Registration successful! Please log in.')
+            messages.success(
+                request,
+                'Registration successful! Please log in.'
+            )
+
             return redirect('login')
 
     return render(request, 'User/user_register.html')
+

@@ -1,0 +1,430 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Login | TaxiBook</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --gold: #c49a43;
+            --gold-dark: #a9802e;
+            --background: #f5f6f8;
+            --text: #20242a;
+            --muted: #747b84;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 15px;
+            background: var(--background);
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .brand-icon {
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 13px;
+            border-radius: 18px;
+            background: #f8f2e7;
+            color: var(--gold-dark);
+            font-size: 28px;
+        }
+
+        .brand h2 {
+            color: var(--text);
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .brand p {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 35px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.045);
+        }
+
+        .login-heading {
+            margin-bottom: 27px;
+        }
+
+        .login-heading h3 {
+            font-size: 23px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 7px;
+        }
+
+        .login-heading p {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .form-label {
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            height: 48px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #f9fafb;
+            font-size: 14px;
+            padding: 12px 14px;
+        }
+
+        .form-control:focus {
+            background: #ffffff;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(196, 154, 67, 0.12);
+        }
+
+        .input-group .form-control {
+            border-right: none;
+        }
+
+        .password-toggle {
+            background: #f9fafb;
+            border: 1px solid var(--border);
+            border-left: none;
+            color: var(--muted);
+            padding: 0 15px;
+            border-radius: 0 9px 9px 0;
+            cursor: pointer;
+        }
+
+        .password-toggle:hover {
+            color: var(--gold-dark);
+        }
+
+        .form-check-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .forgot-link {
+            color: var(--gold-dark);
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            height: 49px;
+            background: var(--gold);
+            color: #ffffff;
+            border: none;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .login-btn:hover {
+            background: var(--gold-dark);
+            transform: translateY(-1px);
+        }
+
+        .register-text {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 23px;
+        }
+
+        .register-text a {
+            color: var(--gold-dark);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .register-text a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 22px;
+            color: var(--muted);
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .back-home:hover {
+            color: var(--gold-dark);
+        }
+
+        .alert {
+            font-size: 13px;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 25px 20px;
+            }
+
+            .brand h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <!-- BRAND -->
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                <i class="fa-solid fa-taxi"></i>
+            </div>
+
+            <h2>TAXIBOOK</h2>
+
+            <p>Your journey, our priority.</p>
+
+        </div>
+
+        <!-- LOGIN CARD -->
+
+        <div class="login-card">
+
+            <div class="login-heading">
+
+                <h3>Welcome Back!</h3>
+
+                <p>Sign in to continue your journey with TaxiBook.</p>
+
+            </div>
+
+            <!-- DJANGO MESSAGES -->
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+                         role="alert">
+
+                        {{ message }}
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close">
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+            <!-- LOGIN FORM -->
+
+            <form method="POST" action="{% url 'login' %}">
+
+                {% csrf_token %}
+
+                <input type="hidden" name="role" value="user">
+
+                <!-- EMAIL -->
+
+                <div class="mb-3">
+
+                    <label for="email" class="form-label">
+                        Email Address
+                    </label>
+
+                    <input type="email"
+                           class="form-control"
+                           id="email"
+                           name="identity"
+                           placeholder="Enter your email address"
+                           autocomplete="email"
+                           required>
+
+                </div>
+
+                <!-- PASSWORD -->
+
+                <div class="mb-3">
+
+                    <label for="password" class="form-label">
+                        Password
+                    </label>
+
+                    <div class="input-group">
+
+                        <input type="password"
+                               class="form-control"
+                               id="password"
+                               name="password"
+                               placeholder="Enter your password"
+                               autocomplete="current-password"
+                               required>
+
+                        <button type="button"
+                                class="password-toggle"
+                                id="togglePassword"
+                                aria-label="Show password">
+
+                            <i class="fa-regular fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- REMEMBER & FORGOT PASSWORD -->
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <div class="form-check">
+
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="remember"
+                               id="remember">
+
+                        <label class="form-check-label" for="remember">
+                            Remember me
+                        </label>
+
+                    </div>
+
+                    <a href="#" class="forgot-link">
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+                <!-- LOGIN BUTTON -->
+
+                <button type="submit" class="login-btn">
+
+                    <i class="fa-solid fa-right-to-bracket me-2"></i>
+                    Login to Account
+
+                </button>
+
+            </form>
+
+            <!-- REGISTER LINK -->
+
+            <div class="register-text">
+
+                Don't have an account?
+
+                <a href="{% url 'user_register' %}">
+                    Create Account
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- BACK HOME -->
+
+        <a href="/" class="back-home">
+
+            <i class="fa-solid fa-arrow-left me-1"></i>
+            Back to Home
+
+        </a>
+
+    </div>
+
+    <!-- BOOTSTRAP JAVASCRIPT -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- PASSWORD VISIBILITY -->
+
+    <script>
+
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+
+        togglePassword.addEventListener('click', function () {
+
+            const isPassword = passwordInput.type === 'password';
+
+            passwordInput.type = isPassword ? 'text' : 'password';
+
+            togglePassword.innerHTML = isPassword
+                ? '<i class="fa-regular fa-eye-slash"></i>'
+                : '<i class="fa-regular fa-eye"></i>';
+
+            togglePassword.setAttribute(
+                'aria-label',
+                isPassword ? 'Hide password' : 'Show password'
+            );
+
+        });
+
+    </script>
+
+</body>
+</html>
