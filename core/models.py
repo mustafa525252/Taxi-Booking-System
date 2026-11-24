@@ -105,3 +105,29 @@ class Driver(models.Model):
         db_table = 'driver_profile'
         verbose_name = 'Driver'
         verbose_name_plural = 'Drivers'
+
+
+
+class UserPasswordResetOTP(models.Model):
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='password_reset_otps'
+    )
+
+    otp_code = models.CharField(max_length=6)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    expires_at = models.DateTimeField()
+
+    is_verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Password Reset OTP - {self.user.email}"
+
+    class Meta:
+        db_table = 'user_password_reset_otp'
+        verbose_name = 'User Password Reset OTP'
+        verbose_name_plural = 'User Password Reset OTPs'

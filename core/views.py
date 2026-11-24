@@ -822,3 +822,26 @@ def user_register(request):
 
     return render(request, 'User/user_register.html')
 
+
+def user_forgot_password(request):
+
+    if request.method == 'POST':
+
+        email = request.POST.get('email', '').strip().lower()
+
+        if not email:
+            messages.error(request, 'Please enter your email address.')
+
+        elif not User.objects.filter(
+            email__iexact=email,
+            is_staff=False,
+            is_active=True
+        ).exists():
+            messages.error(request, 'No registered customer found with this email address.')
+
+        else:
+            messages.success(request, 'Email verified successfully. OTP functionality will be connected in the next step.')
+
+    return render(request, 'User/user_forgot_password.html')
+
+
