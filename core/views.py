@@ -6,12 +6,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 import random
 import re
+import secrets
 from datetime import timedelta
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile, Driver
+from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile, Driver, UserPasswordResetOTP
 from django.shortcuts import get_object_or_404
 import uuid
 from django.db.models import Q
@@ -823,6 +824,7 @@ def user_register(request):
     return render(request, 'User/user_register.html')
 
 
+
 def user_forgot_password(request):
 
     if request.method == 'POST':
@@ -832,16 +834,52 @@ def user_forgot_password(request):
         if not email:
             messages.error(request, 'Please enter your email address.')
 
-        elif not User.objects.filter(
-            email__iexact=email,
-            is_staff=False,
-            is_active=True
-        ).exists():
-            messages.error(request, 'No registered customer found with this email address.')
-
         else:
-            messages.success(request, 'Email verified successfully. OTP functionality will be connected in the next step.')
+            customer = User.objects.filter(
+                email__iexact=email,
+                is_staff=False,
+                is_active=True
+            ).first()
+
+            if not customer:
+                messages.error(
+                    request,
+                    'No registered customer found with this email address.'
+                )
+
+            else:
+                # Delete previous OTPs for this customer
+                UserPasswordResetOTP.objects.filter(
+                    user=customer
+                ).delete()
+
+                # Generate a six-digit OTP
+                otp = str(secrets.randbelow(900000) + 100000)
+
+                # Store OTP with a five-minute expiry
+                UserPasswordResetOTP.objects.create(
+                    user=customer,
+                    otp_code=otp,
+                    expires_at=timezone.now() + timedelta(minutes=5)
+                )
+
+                # Send OTP using Django email backend
+                send_mail(
+                    subject='TaxiBook Password Reset OTP',
+                    message=f'Your password reset OTP is {otp}. '
+                            'It is valid for 5 minutes.',
+                    from_email=None,
+                    recipient_list=[customer.email],
+                    fail_silently=False
+                )
+
+                messages.success(
+                    request,
+                    'OTP generated successfully. Check the server terminal.'
+                )
+                print(f"DEBUG: OTP for {customer.email} is {otp}")
 
     return render(request, 'User/user_forgot_password.html')
+
 
 
