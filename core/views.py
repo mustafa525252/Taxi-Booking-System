@@ -825,6 +825,7 @@ def user_register(request):
 
 
 
+
 def user_forgot_password(request):
 
     if request.method == 'POST':
@@ -848,22 +849,22 @@ def user_forgot_password(request):
                 )
 
             else:
-                # Delete previous OTPs for this customer
+                # Delete previous OTPs
                 UserPasswordResetOTP.objects.filter(
                     user=customer
                 ).delete()
 
-                # Generate a six-digit OTP
+                # Generate six-digit OTP
                 otp = str(secrets.randbelow(900000) + 100000)
 
-                # Store OTP with a five-minute expiry
+                # Store OTP with five-minute expiry
                 UserPasswordResetOTP.objects.create(
                     user=customer,
                     otp_code=otp,
                     expires_at=timezone.now() + timedelta(minutes=5)
                 )
 
-                # Send OTP using Django email backend
+                # Send OTP email
                 send_mail(
                     subject='TaxiBook Password Reset OTP',
                     message=f'Your password reset OTP is {otp}. '
@@ -873,13 +874,95 @@ def user_forgot_password(request):
                     fail_silently=False
                 )
 
+                # Store customer ID in session
+                request.session['password_reset_user_id'] = customer.id
+
                 messages.success(
                     request,
-                    'OTP generated successfully. Check the server terminal.'
+                    'OTP generated successfully. Check your server terminal.'
                 )
-                print(f"DEBUG: OTP for {customer.email} is {otp}")
+
+                return redirect('user_verify_otp')
 
     return render(request, 'User/user_forgot_password.html')
 
+
+
+
+
+def user_verify_otp(request):
+
+    customer_id = request.session.get('password_reset_user_id')
+
+    if not customer_id:
+        messages.error(request, 'Please request a password reset OTP first.')
+        return redirect('user_forgot_password')
+
+    customer = User.objects.filter(
+        id=customer_id,
+        is_staff=False,
+        is_active=True
+    ).first()
+
+    if not customer:
+        request.session.pop('password_reset_user_id', None)
+        messages.error(request, 'Customer account not found.')
+        return redirect('user_forgot_password')
+
+    if request.method == 'POST':
+
+        otp = request.POST.get('otp', '').strip()
+        new_password = request.POST.get('new_password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        if not all([otp, new_password, confirm_password]):
+            messages.error(request, 'Please fill in all fields.')
+
+        elif not otp.isdigit() or len(otp) != 6:
+            messages.error(request, 'Please enter a valid 6-digit OTP.')
+
+        elif new_password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+
+        elif len(new_password) < 8:
+            messages.error(request, 'Password must contain at least 8 characters.')
+
+        else:
+            otp_record = UserPasswordResetOTP.objects.filter(
+                user=customer,
+                otp_code=otp,
+                is_verified=False
+            ).order_by('-created_at').first()
+
+            if not otp_record:
+                messages.error(request, 'Invalid OTP. Please try again.')
+
+            elif timezone.now() > otp_record.expires_at:
+                otp_record.delete()
+                messages.error(request, 'OTP has expired. Please request a new OTP.')
+
+            else:
+                # Verify OTP
+                otp_record.is_verified = True
+                otp_record.save()
+
+                # Reset customer password
+                customer.set_password(new_password)
+                customer.save()
+
+                # Delete used OTP
+                otp_record.delete()
+
+                # Clear password reset session
+                request.session.pop('password_reset_user_id', None)
+
+                messages.success(
+                    request,
+                    'Password reset successful! Please log in with your new password.'
+                )
+
+                return redirect('login')
+
+    return render(request, 'User/user_verify_otp.html')
 
 

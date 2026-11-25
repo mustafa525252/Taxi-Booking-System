@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Verify OTP | TaxiBook</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --gold: #c69b45;
+            --dark: #252525;
+            --muted: #777777;
+            --light: #f8f7f3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light);
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .verify-card {
+            width: 100%;
+            max-width: 450px;
+            background: #fff;
+            padding: 42px 38px;
+            border-radius: 18px;
+            box-shadow: 0 12px 45px rgba(0, 0, 0, 0.07);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-icon {
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            background: #fbf5e9;
+            color: var(--gold);
+            border-radius: 50%;
+            font-size: 25px;
+        }
+
+        .brand h2 {
+            font-weight: 800;
+            color: var(--dark);
+            letter-spacing: 1px;
+        }
+
+        .brand h2 span {
+            color: var(--gold);
+        }
+
+        .brand p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 7px;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 27px;
+        }
+
+        .form-title h4 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .form-title p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            padding: 13px;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            font-size: 14px;
+            box-shadow: none !important;
+        }
+
+        .form-control:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(198, 155, 69, 0.12) !important;
+        }
+
+        .otp-input {
+            text-align: center;
+            letter-spacing: 8px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .password-group {
+            position: relative;
+        }
+
+        .password-group .form-control {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            z-index: 5;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            background: var(--gold);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            font-weight: 700;
+            margin-top: 12px;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #ad8234;
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 24px;
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: var(--gold);
+        }
+
+        .alert {
+            font-size: 13px;
+        }
+
+        @media (max-width: 480px) {
+            .verify-card {
+                padding: 35px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="verify-card">
+
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <h2>TAXI<span>BOOK</span></h2>
+            <p>Your journey, our responsibility.</p>
+        </div>
+
+        <div class="form-title">
+            <h4>Verify OTP</h4>
+            <p>
+                Enter the 6-digit OTP displayed in your email,
+                then create your new password.
+            </p>
+        </div>
+
+        <!-- Django Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'user_verify_otp' %}">
+            {% csrf_token %}
+
+            <!-- OTP -->
+            <div class="mb-4">
+                <label for="otp" class="form-label">6-Digit OTP</label>
+
+                <input
+                    type="text"
+                    class="form-control otp-input"
+                    id="otp"
+                    name="otp"
+                    placeholder="000000"
+                    maxlength="6"
+                    pattern="[0-9]{6}"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    required
+                >
+            </div>
+
+            <!-- New Password -->
+            <div class="mb-3">
+                <label for="new_password" class="form-label">
+                    New Password
+                </label>
+
+                <div class="password-group">
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="new_password"
+                        name="new_password"
+                        placeholder="Enter new password"
+                        minlength="8"
+                        required
+                    >
+
+                    <i class="fa-regular fa-eye toggle-password"
+                       onclick="togglePassword('new_password', this)"></i>
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3">
+                <label for="confirm_password" class="form-label">
+                    Confirm New Password
+                </label>
+
+                <div class="password-group">
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Confirm new password"
+                        minlength="8"
+                        required
+                    >
+
+                    <i class="fa-regular fa-eye toggle-password"
+                       onclick="togglePassword('confirm_password', this)"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Verify OTP & Reset Password
+                <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+
+        </form>
+
+        <a href="{% url 'user_forgot_password' %}" class="back-link">
+            <i class="fa-solid fa-arrow-left me-2"></i>
+            Back to Forgot Password
+        </a>
+
+    </div>
+
+    <script>
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
