@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponseForbidden
 import random
 import re
 import secrets
@@ -19,11 +20,16 @@ from django.db.models import Q
 # Create your views here.    
 
 
+
 def login_view(request):
 
     if request.user.is_authenticated:
+
         if request.user.is_staff:
             return redirect('dashboard')
+
+        if Driver.objects.filter(user=request.user).exists():
+            return redirect('driver_dashboard')
 
         return redirect('user_dashboard')
 
@@ -72,7 +78,7 @@ def login_view(request):
 
             elif role == 'user':
 
-                # Normal user login using email
+                # Normal customer login using email
                 normal_user = User.objects.filter(
                     email__iexact=identity,
                     is_staff=False,
@@ -98,13 +104,49 @@ def login_view(request):
 
                 messages.error(request, "Invalid email or password.")
 
+            elif role == 'driver':
+
+                # Driver login using email
+                driver_user = User.objects.filter(
+                    email__iexact=identity,
+                    is_staff=False,
+                    is_active=True
+                ).first()
+
+                if driver_user and Driver.objects.filter(user=driver_user).exists():
+
+                    user = authenticate(
+                        request,
+                        username=driver_user.username,
+                        password=password
+                    )
+
+                    if user is not None:
+                        login(request, user)
+
+                        if request.POST.get('remember'):
+                            request.session.set_expiry(1209600)
+                        else:
+                            request.session.set_expiry(0)
+
+                        return redirect('driver_dashboard')
+
+                messages.error(
+                    request,
+                    "Invalid driver email or password."
+                )
+
             else:
                 messages.error(request, "Invalid account type.")
 
     if request.GET.get('role') == 'admin':
         return render(request, 'User/admin_login.html')
 
+    elif request.GET.get('role') == 'driver':
+        return render(request, 'User/driver_login.html')
+
     return render(request, 'User/user_login.html')
+
 
 
 def logout_view(request):
@@ -1054,6 +1096,67 @@ def driver_register(request):
                 'Driver registration successful! Please log in.'
             )
 
-            return redirect('driver_login')
+            return redirect('login_view')
 
     return render(request, 'User/driver_register.html')
+
+
+@login_required(login_url='driver_login')
+def driver_dashboard(request):
+
+    if not Driver.objects.filter(user=request.user).exists():
+        return HttpResponseForbidden("Access denied.")
+
+    return render(request, 'Driver/driver_dashboard.html')
+
+
+
+def driver_login(request):
+
+    if request.user.is_authenticated:
+
+        if Driver.objects.filter(user=request.user).exists():
+            return redirect('driver_dashboard')
+
+        messages.error(request, "You are already logged in with another account.")
+        return redirect('login')
+
+    if request.method == 'POST':
+
+        email = request.POST.get('email', '').strip().lower()
+        password = request.POST.get('password', '')
+
+        if not email or not password:
+            messages.error(request, "Please enter your email and password.")
+
+        else:
+
+            # Find registered driver
+            driver_user = User.objects.filter(
+                email__iexact=email,
+                is_staff=False,
+                is_active=True
+            ).first()
+
+            if driver_user and Driver.objects.filter(user=driver_user).exists():
+
+                user = authenticate(
+                    request,
+                    username=driver_user.username,
+                    password=password
+                )
+
+                if user is not None:
+
+                    login(request, user)
+
+                    if request.POST.get('remember'):
+                        request.session.set_expiry(1209600)
+                    else:
+                        request.session.set_expiry(0)
+
+                    return redirect('driver_dashboard')
+
+            messages.error(request, "Invalid driver email or password.")
+
+    return render(request, 'Driver/driver_login.html')
