@@ -23,6 +23,7 @@ urlpatterns = [
     #user_forgot_password
     path('user-forgot-password/',views.user_forgot_password,name='user_forgot_password'),
     path('user-verify-otp/',views.user_verify_otp,name='user_verify_otp'),
+    path('driver-register/',views.driver_register,name='driver_register'),
     path('logout/', views.logout_view, name='logout'),
 
 ]

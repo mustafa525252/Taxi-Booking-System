@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Driver Registration | TaxiBook</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --gold: #c69b45;
+            --dark: #252525;
+            --muted: #777777;
+            --light: #f8f7f3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            padding: 30px 15px;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 560px;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 12px 45px rgba(0, 0, 0, 0.07);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .brand-icon {
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            background: #fbf5e9;
+            color: var(--gold);
+            border-radius: 50%;
+            font-size: 25px;
+        }
+
+        .brand h2 {
+            color: var(--dark);
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .brand h2 span {
+            color: var(--gold);
+        }
+
+        .brand p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 7px;
+        }
+
+        .form-heading {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .form-heading h4 {
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .form-heading p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .form-label {
+            color: #444;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            overflow: hidden;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(198, 155, 69, 0.12);
+        }
+
+        .input-group-text {
+            background: #ffffff;
+            border: none;
+            color: var(--gold);
+            padding-left: 14px;
+        }
+
+        .form-control {
+            border: none;
+            padding: 13px 12px;
+            font-size: 14px;
+            box-shadow: none !important;
+        }
+
+        .password-group {
+            position: relative;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+        }
+
+        .password-group:focus-within {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(198, 155, 69, 0.12);
+        }
+
+        .password-group .form-control {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--gold);
+            color: #ffffff;
+            border: none;
+            border-radius: 9px;
+            font-weight: 700;
+            margin-top: 12px;
+            transition: 0.3s;
+        }
+
+        .register-btn:hover {
+            background: #ad8234;
+            transform: translateY(-2px);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .login-link a {
+            color: var(--gold);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            color: #ad8234;
+        }
+
+        .alert {
+            font-size: 13px;
+        }
+
+        @media (max-width: 576px) {
+            .register-card {
+                padding: 30px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="register-card">
+
+        <!-- Brand -->
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-car-side"></i>
+            </div>
+
+            <h2>TAXI<span>BOOK</span></h2>
+            <p>Join our driver community</p>
+        </div>
+
+        <!-- Heading -->
+        <div class="form-heading">
+            <h4>Driver Registration</h4>
+            <p>Create your driver account to get started.</p>
+        </div>
+
+        <!-- Django Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Registration Form -->
+        <form method="POST" action="{% url 'driver_register' %}">
+            {% csrf_token %}
+
+            <!-- Full Name -->
+            <div class="mb-3">
+                <label class="form-label" for="full_name">Full Name</label>
+
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-regular fa-user"></i>
+                    </span>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="full_name"
+                        name="full_name"
+                        placeholder="Enter your full name"
+                        maxlength="150"
+                        required
+                    >
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label" for="email">Email Address</label>
+
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-regular fa-envelope"></i>
+                    </span>
+
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email address"
+                        required
+                    >
+                </div>
+            </div>
+
+            <!-- License Number -->
+            <div class="mb-3">
+                <label class="form-label" for="license_number">
+                    Driving License Number
+                </label>
+
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-id-card"></i>
+                    </span>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="license_number"
+                        name="license_number"
+                        placeholder="Enter your license number"
+                        maxlength="50"
+                        required
+                    >
+                </div>
+            </div>
+
+            <!-- Mobile -->
+            <div class="mb-3">
+                <label class="form-label" for="mobile">Mobile Number</label>
+
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-phone"></i>
+                    </span>
+
+                    <input
+                        type="tel"
+                        class="form-control"
+                        id="mobile"
+                        name="mobile"
+                        placeholder="Enter your 10-digit mobile number"
+                        maxlength="10"
+                        pattern="[0-9]{10}"
+                        inputmode="numeric"
+                        required
+                    >
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label" for="password">Password</label>
+
+                <div class="password-group">
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                        minlength="8"
+                        required
+                    >
+
+                    <i class="fa-regular fa-eye toggle-password"
+                       onclick="togglePassword('password', this)"></i>
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3">
+                <label class="form-label" for="confirm_password">
+                    Confirm Password
+                </label>
+
+                <div class="password-group">
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Confirm your password"
+                        minlength="8"
+                        required
+                    >
+
+                    <i class="fa-regular fa-eye toggle-password"
+                       onclick="togglePassword('confirm_password', this)"></i>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="register-btn">
+                Register as Driver
+                <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+
+        </form>
+
+        <!-- Login Link -->
+        <div class="login-link">
+            Already registered?
+            <a href="{% url 'driver_login' %}">Login as Driver</a>
+        </div>
+
+    </div>
+
+    <script>
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

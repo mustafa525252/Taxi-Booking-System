@@ -966,3 +966,94 @@ def user_verify_otp(request):
     return render(request, 'User/user_verify_otp.html')
 
 
+
+def driver_register(request):
+
+    if request.method == 'POST':
+
+        full_name = request.POST.get('full_name', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        license_number = request.POST.get('license_number', '').strip().upper()
+        mobile = request.POST.get('mobile', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        # Validate empty fields
+        if not all([full_name, email, license_number, mobile, password, confirm_password]):
+            messages.error(request, 'Please fill in all fields.')
+
+        # Validate full name
+        elif not re.fullmatch(r"[A-Za-z ]+", full_name):
+            messages.error(request, 'Full name should contain only letters and spaces.')
+
+        # Validate email format
+        elif not re.fullmatch(r'[^@\s]+@[^@\s]+\.[^@\s]+', email):
+            messages.error(request, 'Please enter a valid email address.')
+
+        # Validate mobile number
+        elif not re.fullmatch(r'[0-9]{10}', mobile):
+            messages.error(request, 'Please enter a valid 10-digit mobile number.')
+
+        # Validate license number
+        elif len(license_number) < 5:
+            messages.error(request, 'Please enter a valid license number.')
+
+        # Validate password
+        elif len(password) < 8:
+            messages.error(request, 'Password must contain at least 8 characters.')
+
+        elif password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+
+        # Check duplicate email
+        elif User.objects.filter(email__iexact=email).exists():
+            messages.error(request, 'This email is already registered.')
+
+        # Check duplicate license
+        elif Driver.objects.filter(license_number__iexact=license_number).exists():
+            messages.error(request, 'This license number is already registered.')
+
+        # Check duplicate mobile
+        elif Driver.objects.filter(mobile=mobile).exists():
+            messages.error(request, 'This mobile number is already registered.')
+
+        else:
+
+            name_parts = full_name.split()
+
+            first_name = name_parts[0]
+            last_name = ' '.join(name_parts[1:])
+
+            # Generate unique username
+            base_username = email.split('@')[0]
+            username = base_username
+            counter = 1
+
+            while User.objects.filter(username=username).exists():
+                username = f'{base_username}{counter}'
+                counter += 1
+
+            # Create Django user
+            driver_user = User.objects.create_user(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password
+            )
+
+            # Create driver profile
+            Driver.objects.create(
+                user=driver_user,
+                license_number=license_number,
+                mobile=mobile
+            )
+
+            messages.success(
+                request,
+                'Driver registration successful! Please log in.'
+            )
+
+            return redirect('driver_login')
+
+    return render(request, 'User/driver_register.html')
