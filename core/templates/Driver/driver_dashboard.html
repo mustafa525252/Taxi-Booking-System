@@ -107,12 +107,24 @@
 
 <body>
 
+
 <nav class="navbar">
     <div class="container-fluid">
         <span class="brand">TAXIBOOK</span>
-        <span class="status">Driver Account</span>
+
+        <div class="d-flex align-items-center gap-3">
+            <span class="status">Driver Account</span>
+
+            <form method="POST" action="{% url 'driver_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    Logout
+                </button>
+            </form>
+        </div>
     </div>
 </nav>
+
 
 <div class="dashboard-container">
 

@@ -17,6 +17,8 @@ from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile, Driver
 from django.shortcuts import get_object_or_404
 import uuid
 from django.db.models import Q
+from django.contrib.auth import logout
+
 # Create your views here.    
 
 
@@ -1171,3 +1173,14 @@ def driver_login(request):
             messages.error(request, "Invalid driver email or password.")
 
     return render(request, 'Driver/driver_login.html')
+
+
+
+def driver_logout(request):
+
+    if request.method == 'POST':
+        logout(request)
+        messages.success(request, "You have been logged out successfully.")
+        return redirect('driver_login')
+
+    return redirect('driver_dashboard')
