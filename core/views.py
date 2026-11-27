@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile, Driver, UserPasswordResetOTP
+from .models import AdminAccount, AdminPasswordResetOTP, CustomerProfile, Driver, UserPasswordResetOTP, DriverPasswordResetOTP
 from django.shortcuts import get_object_or_404
 import uuid
 from django.db.models import Q
@@ -1184,3 +1184,79 @@ def driver_logout(request):
         return redirect('driver_login')
 
     return redirect('driver_dashboard')
+
+
+
+def driver_forgot_password(request):
+
+    if request.method == 'POST':
+
+        email = request.POST.get('email', '').strip().lower()
+
+        if not email:
+            messages.error(request, "Please enter your email address.")
+
+        else:
+
+            driver = Driver.objects.filter(
+                user__email__iexact=email,
+                user__is_active=True
+            ).select_related('user').first()
+
+            if driver:
+
+                # Delete previous unused OTPs for this driver
+                DriverPasswordResetOTP.objects.filter(
+                    driver=driver,
+                    is_used=False
+                ).delete()
+
+                # Generate 6-digit OTP
+                otp = str(secrets.randbelow(900000) + 100000)
+
+                # Save OTP with 5-minute expiry
+                otp_record = DriverPasswordResetOTP.objects.create(
+                    driver=driver,
+                    otp_code=otp,
+                    expires_at=timezone.now() + timedelta(minutes=5)
+                )
+
+                # Send OTP to driver's email
+                try:
+                    send_mail(
+                        subject='TaxiBook Driver Password Reset OTP',
+                        message=(
+                            f'Hello {driver.user.first_name},\n\n'
+                            f'Your password reset OTP is: {otp}\n\n'
+                            'This OTP is valid for 5 minutes.\n'
+                            'Do not share this OTP with anyone.'
+                        ),
+                        from_email=None,
+                        recipient_list=[driver.user.email],
+                        fail_silently=False
+                    )
+
+                    request.session['driver_reset_otp_id'] = otp_record.id
+
+                    messages.success(
+                        request,
+                        "OTP has been sent to your registered email address."
+                    )
+
+                    return redirect('driver_verify_otp')
+
+                except Exception:
+                    otp_record.delete()
+
+                    messages.error(
+                        request,
+                        "Unable to send OTP. Please try again later."
+                    )
+
+            else:
+                messages.error(
+                    request,
+                    "No active driver account found with this email."
+                )
+
+    return render(request, 'Driver/driver_forgot_password.html')
