@@ -1101,13 +1101,24 @@ def driver_register(request):
     return render(request, 'User/driver_register.html')
 
 
+
 @login_required(login_url='driver_login')
 def driver_dashboard(request):
 
-    if not Driver.objects.filter(user=request.user).exists():
-        return HttpResponseForbidden("Access denied.")
+    driver = Driver.objects.filter(user=request.user).first()
 
-    return render(request, 'Driver/driver_dashboard.html')
+    if not driver:
+        messages.error(request, "You do not have a registered driver account.")
+        return redirect('driver_login')
+
+    context = {
+        'driver': driver,
+        'full_name': request.user.get_full_name() or request.user.username,
+        'email': request.user.email,
+    }
+
+    return render(request, 'Driver/driver_dashboard.html', context)
+
 
 
 
